@@ -1,7 +1,7 @@
 .layout {
   display: flex;
   height: 100vh;
-  background-color: #f4f6f9;
+  background-color: #303a49;
   font-family: Arial, sans-serif;
 }
 
@@ -41,8 +41,8 @@
 
 .header {
   height: 60px;
-  background-color: white;
-  border-bottom: 1px solid #e5e7eb;
+  background-color: rgb(48, 45, 56);
+  border-bottom: 1px solid #292a2b;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -63,7 +63,7 @@
 }
 
 .card {
-  background: white;
+  background: rgb(29, 207, 216);
   padding: 1.25rem;
   border-radius: 10px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
@@ -71,11 +71,12 @@
 
 .cardTitle {
   font-size: 0.9rem;
-  color: #6b7280;
+  color: #181818;
 }
 
 .cardValue {
   font-size: 1.8rem;
   font-weight: bold;
   margin-top: 0.5rem;
+  color: #111827;
 }
