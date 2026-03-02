@@ -29,10 +29,10 @@ export default function RootLayout({
       >
         {children}
 
-        {/* <nav style={{ padding: "1rem", borderBottom: "1px solid #ccc" }}>
+        <nav style={{ padding: "1rem", borderBottom: "1px solid #ccc" }}>
           <a href="/">Home</a> | 
           <a href="/dashboard">Dashboard</a>
-        </nav> */}
+        </nav>
       </body>
     </html>
   );
