@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import styles from "./section.module.css";
+import * as XLSX from "xlsx"; 
+
+
+
 
 type Student = {
   id: string;
@@ -19,6 +23,39 @@ export default function SectionPage() {
   const [sectionName, setSectionName] = useState("");
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
   const [studentName, setStudentName] = useState("");
+  const [excelFile, setExcelFile] = useState<File | null>(null);
+const [importedStudents, setImportedStudents] = useState<string[]>([]);
+
+const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    setExcelFile(file);
+  }
+};
+
+const handleImportExcel = async () => {
+  if (!excelFile) return;
+
+  const data = await excelFile.arrayBuffer();
+  const workbook = XLSX.read(data);
+
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+
+  const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet, {
+    header: 1,
+  });
+
+  // Assuming names are in first column
+  const students = jsonData
+    .map((row) => row[0])
+    .filter((name) => typeof name === "string");
+
+  setImportedStudents(students);
+
+  // TODO: merge into section state
+  console.log("Imported Students:", students);
+};
 
   const handleCreateSection = () => {
     if (!sectionName.trim()) return;
@@ -94,6 +131,27 @@ export default function SectionPage() {
             />
             <button className={styles.button} onClick={handleAddStudent}>
               Add
+            </button>
+          </div>
+
+          <div className="mt-6 border-t pt-4">
+            <p className="text-sm font-semibold mb-2">Import from Excel</p>
+
+            <input
+              type="file"
+              accept=".xlsx, .xls, .csv"
+              onChange={handleFileChange}
+              className="mb-3"
+            />
+            <button className={styles.button} onClick={() => setExcelFile(null)}>
+              Add Students
+            </button>
+
+            <button
+              onClick={handleImportExcel}
+              className="bg-blue-600 text-white px-4 py-2 rounded-md"
+            >
+              Import Excel
             </button>
           </div>
 
