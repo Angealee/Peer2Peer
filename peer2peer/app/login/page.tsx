@@ -17,8 +17,8 @@ export default function LoginPage() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
+        <img src="/peer2peerlogo.png" alt="Logo" className={styles.logo} />
         <h2 className={styles.title}>Peer 2 Peer Evaluation</h2>
-
         <form onSubmit={handleSubmit}>
           <input
             type="email"

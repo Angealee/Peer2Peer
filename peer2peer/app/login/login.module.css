@@ -9,14 +9,23 @@
 
 .card {
   width: 450px;
-  height: 400px;
-  padding-top : 3rem;
-  padding-bottom: 4rem;
+  height: 520px;
+  padding-top : 0rem;
+  padding-bottom: 3rem;
   padding-left: 3rem;
   padding-right: 3rem;
   background: rgba(224, 155, 26, 0.979);
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.logo {
+  display: block;
+  margin-top: 20px;
+  width: 100px;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .title {
