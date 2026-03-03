@@ -1,0 +1,89 @@
+.container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+}
+
+.title {
+  margin-bottom: 1.5rem;
+  color: #111827;
+}
+
+.form {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.formGroup input,
+.formGroup select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+}
+
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.criteriaSection {
+  margin-bottom: 1.5rem;
+}
+
+.criteriaRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.criteriaRow input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+.addBtn {
+  padding: 8px 14px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.removeBtn {
+  padding: 8px 14px;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submitBtn {
+  margin-top: 1rem;
+  padding: 12px 20px;
+  background-color: #111827;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+}
