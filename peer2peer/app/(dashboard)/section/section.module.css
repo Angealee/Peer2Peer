@@ -1,0 +1,121 @@
+.container {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Page Title */
+.pageTitle {
+  font-size: 26px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Card */
+.card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Card Title */
+.cardTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* Input Row */
+.inputRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap; 
+}
+
+.input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  color: #111827;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.2);
+}
+
+.button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #14b8a6;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.button:hover {
+  background: #0d9488;
+}
+
+/* Section Grid */
+.sectionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+/* Section Card */
+.sectionCard {
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sectionCard:hover {
+  background: #e6fffa;
+  border-color: #14b8a6;
+  transform: translateY(-3px);
+}
+
+.activeCard {
+  border: 2px solid #14b8a6;
+  background: #ccfbf1;
+}
+
+.sectionName {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.sectionMeta {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* Student List */
+.studentList {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
