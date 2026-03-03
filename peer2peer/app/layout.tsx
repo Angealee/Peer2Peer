@@ -28,11 +28,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-
-        <nav style={{ padding: "1rem", borderBottom: "1px solid #ccc" }}>
-          <a href="/">Home</a> | 
-          <a href="/dashboard">Dashboard</a>
-        </nav>
       </body>
     </html>
   );

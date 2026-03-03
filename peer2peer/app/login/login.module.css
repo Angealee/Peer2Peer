@@ -4,19 +4,28 @@
   justify-content: center;
   align-items: center;
   background-color: #242d3a;
+  background-image: linear-gradient(75deg, #ac6e184b, #242d3a);
 }
 
 .card {
-  width: 350px;
-  padding: 2rem;
-  background: rgb(46, 81, 108);
+  width: 450px;
+  height: 400px;
+  padding-top : 3rem;
+  padding-bottom: 4rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+  background: rgba(224, 155, 26, 0.979);
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .title {
   text-align: center;
-  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #000000;
+  margin-bottom: 2rem;
 }
 
 .input {
@@ -24,7 +33,9 @@
   padding: 0.75rem;
   margin-bottom: 1rem;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid #ffffff;
+  color: #000000;
+  background-color: #ffffff;
 }
 
 .button {
@@ -32,7 +43,7 @@
   padding: 0.75rem;
   border-radius: 6px;
   border: none;
-  background-color: #2563eb;
+  background-color: #242d3a;
   color: white;
   font-weight: 600;
   cursor: pointer;
