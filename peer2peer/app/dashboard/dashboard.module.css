@@ -1,7 +1,8 @@
 .layout {
   display: flex;
   height: 100vh;
-  background-color: #303a49;
+  overflow: hidden;
+  background-color: #e5eaf0;
   font-family: Arial, sans-serif;
 }
 
@@ -26,6 +27,7 @@
   border-radius: 6px;
   cursor: pointer;
   margin-bottom: 0.5rem;
+  transition: 0.2s ease;
 }
 
 .navItem:hover {
@@ -37,36 +39,56 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .header {
   height: 60px;
-  background-color: rgb(48, 45, 56);
+  background-color: rgba(224, 155, 26, 0.979);
   border-bottom: 1px solid #292a2b;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 1.5rem;
+  font-weight: 500;
 }
 
 .content {
+  flex: 1;
   padding: 1.5rem;
   overflow-y: auto;
 }
 
-/* Cards */
-.cardGrid {
+/* Title */
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+/* KPI Grid (Uses existing card style) */
+.kpiGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1rem;
   margin-top: 1rem;
+  margin-bottom: 2rem;
 }
 
+/* Cards */
 .card {
   background: rgb(29, 207, 216);
   padding: 1.25rem;
   border-radius: 10px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
 }
 
 .cardTitle {
@@ -79,4 +101,76 @@
   font-weight: bold;
   margin-top: 0.5rem;
   color: #111827;
+}
+
+/* Section Containers */
+.section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+}
+
+.section h2 {
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+/* Progress Bars */
+.progressItem {
+  margin-bottom: 1rem;
+}
+
+.progressLabel {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.progressBar {
+  background-color: #d1d5db;
+  height: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.progressFill {
+  background-color: rgb(29, 207, 216);
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+/* Activity Feed */
+.activityList {
+  list-style: none;
+  padding: 0;
+}
+
+.activityList li {
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+/* Quick Actions */
+.buttonRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.buttonRow button {
+  padding: 10px 18px;
+  background-color: #111827;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.buttonRow button:hover {
+  background-color: #1f2937;
 }
