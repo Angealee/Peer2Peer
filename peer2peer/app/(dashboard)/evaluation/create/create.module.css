@@ -14,17 +14,20 @@
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  color: #000000;
+  
 }
 
 .formGroup {
   margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
+
 }
 
 .formGroup label {
   margin-bottom: 6px;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .formGroup input,

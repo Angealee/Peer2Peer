@@ -19,6 +19,10 @@ export default function DashboardLayout({
           Dashboard
         </div>
 
+        <div onClick={() => router.push("/section")} className={styles.navItem}>
+          Create Section
+        </div>
+
         <div onClick={() => router.push("/evaluation/create")} className={styles.navItem}>
           Create Evaluation
         </div>
