@@ -57,7 +57,9 @@
 .content {
   flex: 1;
   padding: 1.5rem;
-  overflow-y: auto;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Title */

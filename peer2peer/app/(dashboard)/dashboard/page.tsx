@@ -46,7 +46,7 @@ export default function DashboardPage() {
       
 
       {/* Scrollable Content */}
-      <div className={styles.content}>
+        <div className={styles.content}>
             <h1 className={styles.title}>Dashboard Overview</h1>
 
             {/* KPI Section */}
