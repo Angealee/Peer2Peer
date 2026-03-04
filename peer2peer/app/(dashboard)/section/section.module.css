@@ -63,6 +63,8 @@
   font-weight: 500;
   cursor: pointer;
   transition: 0.2s ease;
+  flex: wrap;
+  margin-right: 10px;
 }
 
 .button:hover {
