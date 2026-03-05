@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import styles from "../login/login.module.css";
+import styles from "../register/register.module.css";
 import { api } from "@/lib/api-client";
 
 export default function RegisterPage() {
