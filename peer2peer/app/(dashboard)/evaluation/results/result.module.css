@@ -1,0 +1,250 @@
+/* app/dashboard/results/result.module.css */
+
+.container {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #111827;
+}
+
+/* ── Selector Card ── */
+.selectorCard {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.selectorCard h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.evalBtn {
+  padding: 10px 18px;
+  background-color: #111827;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: 0.2s ease;
+}
+
+.evalBtn:hover {
+  background-color: #1f2937;
+}
+
+.evalBtnActive {
+  padding: 10px 18px;
+  background-color: rgb(29, 207, 216);
+  color: #111827;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: 0.2s ease;
+}
+
+/* ── KPI Grid ── */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.kpiCard {
+  background: rgb(29, 207, 216);
+  padding: 1.25rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.kpiCard:hover {
+  transform: translateY(-3px);
+}
+
+.kpiLabel {
+  font-size: 0.85rem;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.kpiValue {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #111827;
+  margin-top: 0.4rem;
+}
+
+.kpiValueSm {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #111827;
+  margin-top: 0.4rem;
+}
+
+/* ── Section Card ── */
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.card h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.25rem;
+}
+
+/* ── Student Row ── */
+.studentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.studentName {
+  font-weight: bold;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.studentEmail {
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-weight: normal;
+}
+
+.avgBadge {
+  background: rgb(29, 207, 216);
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  color: #111827;
+}
+
+/* ── Progress Bars ── */
+.progressItem {
+  margin-bottom: 0.85rem;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 5px;
+}
+
+.progressMeta {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.progressBar {
+  background-color: #e5e7eb;
+  height: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.progressFill {
+  background-color: rgb(29, 207, 216);
+  height: 100%;
+  border-radius: 8px;
+  transition: width 0.4s ease;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #f3f4f6;
+  margin: 1.25rem 0;
+}
+
+/* ── Leaderboard ── */
+.leaderboardList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.leaderboardItem {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.leaderboardItem:last-child {
+  border-bottom: none;
+}
+
+.leaderboardRank {
+  width: 2rem;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.leaderboardName {
+  flex: 1;
+  font-weight: 600;
+  color: #111827;
+}
+
+.leaderboardScore {
+  font-weight: bold;
+  color: rgb(29, 207, 216);
+  font-size: 1rem;
+}
+
+/* ── Empty / Loading States ── */
+.emptyState {
+  background: white;
+  padding: 3rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.loadingText {
+  color: #9ca3af;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.errorText {
+  color: #dc2626;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
