@@ -17,14 +17,15 @@
 /* Accordion Card */
 
 .accordionCard {
-  background: white;
+  background: rgb(222, 230, 230);
   border-radius: 9px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #000000;
   overflow: hidden;
+  color: #000000;
+  transition: all 0.18s ease;
 }
 .accordionCard:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  color: #000000;
 }
 
 .accordionHeader {
