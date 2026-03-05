@@ -7,6 +7,13 @@ import { NextRequest } from "next/server";
 const SECRET = process.env.JWT_SECRET!;
 const EXPIRES_IN = "7d";
 
+// Define a proper type for your JWT payload
+export interface AuthUser {
+  id: number;
+  email: string;
+  role: string;
+}
+
 export interface JWTPayload {
   userId: number;
   email: string;
@@ -43,8 +50,33 @@ export function requireAuth(req: NextRequest): JWTPayload {
 }
 
 // Require admin role
-export function requireAdmin(req: NextRequest): JWTPayload {
-  const user = requireAuth(req);
-  if (user.role !== "ADMIN") throw new Error("FORBIDDEN");
-  return user;
+export function requireAdmin(req: NextRequest): AuthUser {
+  const authHeader = req.headers.get("authorization");
+  
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    throw new Error("Unauthorized");
+  }
+
+  const token = authHeader.split(" ")[1];
+  
+  const decoded = jwt.verify(token, process.env.JWT_SECRET!) as AuthUser;
+
+  if (decoded.role.toLowerCase() !== "admin") {
+    throw new Error("Forbidden");
+  }
+
+  return decoded;
+}
+
+// lib/auth.ts - when creating the token, make sure role is included
+export function generateToken(user: { id: number; email: string; role: string }) {
+  return jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+      role: user.role,   // ← make sure this field is actually included
+    },
+    process.env.JWT_SECRET!,
+    { expiresIn: "7d" }
+  );
 }

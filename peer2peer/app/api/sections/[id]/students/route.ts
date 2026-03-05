@@ -5,14 +5,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }  // ← type as Promise
+) {
   try {
     const user = requireAdmin(req);
-    const sectionId = parseInt(params.id);
+    const { id } = await params;  // ← await params first
+    const sectionId = parseInt(id);
 
     // Ensure the section belongs to this instructor
     const section = await prisma.section.findFirst({
-      where: { id: sectionId, createdBy: user.userId },
+      where: {
+        id: sectionId,
+        createdBy: user.sub,
+      },
     });
 
     if (!section) {
