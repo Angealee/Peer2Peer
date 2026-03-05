@@ -70,7 +70,7 @@ export default function CreateEvaluationPage() {
             onChange={(e) => setSelectedClass(e.target.value)}
             required
           >
-            <option value="">-- Select Class --</option>
+            <option value="">-- Select Section --</option>
             <option value="BSCS 3A">BSCS 3A</option>
             <option value="BSCS 3B">BSCS 3B</option>
             <option value="BSIT 2A">BSIT 2A</option>
