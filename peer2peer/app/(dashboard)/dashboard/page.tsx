@@ -23,9 +23,9 @@ export default function DashboardPage() {
   };
 
   const classProgress = [
-    { name: "BSCS 3A", percent: 82 },
-    { name: "BSCS 3B", percent: 56 },
-    { name: "BSIT 2A", percent: 34 },
+    { name: "1A", percent: 82 },
+    { name: "1B", percent: 56 },
+    { name: "1C", percent: 34 },
   ];
 
   const activityFeed = [
