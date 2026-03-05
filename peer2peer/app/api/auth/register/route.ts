@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { signToken } from "@/lib/auth";
+import "dotenv/config";
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,8 +35,12 @@ export async function POST(req: NextRequest) {
       { token, user: { id: user.id, name: user.name, email: user.email, role: user.role } },
       { status: 201 }
     );
-  } catch (err) {
-    console.error("[POST /api/auth/register]", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
+  } catch (err: any) {
+  console.error("[REGISTER ERROR MESSAGE]", err?.message);
+  console.error("[REGISTER ERROR CAUSE]", err?.cause);
+  console.error("[REGISTER ERROR FULL]", JSON.stringify(err, null, 2));
+  return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+}
+  
+  
 }
