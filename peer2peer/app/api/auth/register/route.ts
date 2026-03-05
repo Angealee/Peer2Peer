@@ -13,17 +13,20 @@ export async function POST(req: NextRequest) {
     if (!name || !email || !password) {
       return NextResponse.json({ error: "Name, email, and password are required" }, { status: 400 });
     }
+    console.error("Received registration request for email:", email);
 
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       return NextResponse.json({ error: "Email already registered" }, { status: 409 });
     }
+    console.error("No existing user found with email:", email);
 
     const hashed = await bcrypt.hash(password, 12);
 
     const user = await prisma.user.create({
       data: { name, email, password: hashed, role: "ADMIN" },
     });
+    console.error("Created new user with ID:", user.id);
 
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
 
