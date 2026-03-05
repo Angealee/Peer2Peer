@@ -18,7 +18,7 @@ export async function GET(
     const section = await prisma.section.findFirst({
       where: {
         id: sectionId,
-        createdBy: user.sub,
+        createdBy: user.id,
       },
     });
 
