@@ -1274,10 +1274,12 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     sections: number
+    evaluations: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sections?: boolean | UserCountOutputTypeCountSectionsArgs
+    evaluations?: boolean | UserCountOutputTypeCountEvaluationsArgs
   }
 
   // Custom InputTypes
@@ -1296,6 +1298,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SectionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountEvaluationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EvaluationWhereInput
   }
 
 
@@ -1653,6 +1662,7 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     sections?: boolean | User$sectionsArgs<ExtArgs>
+    evaluations?: boolean | User$evaluationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1669,6 +1679,7 @@ export namespace Prisma {
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "role", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sections?: boolean | User$sectionsArgs<ExtArgs>
+    evaluations?: boolean | User$evaluationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -1676,6 +1687,7 @@ export namespace Prisma {
     name: "User"
     objects: {
       sections: Prisma.$SectionPayload<ExtArgs>[]
+      evaluations: Prisma.$EvaluationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -2024,6 +2036,7 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     sections<T extends User$sectionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    evaluations<T extends User$evaluationsArgs<ExtArgs> = {}>(args?: Subset<T, User$evaluationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EvaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2422,6 +2435,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SectionScalarFieldEnum | SectionScalarFieldEnum[]
+  }
+
+  /**
+   * User.evaluations
+   */
+  export type User$evaluationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Evaluation
+     */
+    select?: EvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Evaluation
+     */
+    omit?: EvaluationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EvaluationInclude<ExtArgs> | null
+    where?: EvaluationWhereInput
+    orderBy?: EvaluationOrderByWithRelationInput | EvaluationOrderByWithRelationInput[]
+    cursor?: EvaluationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EvaluationScalarFieldEnum | EvaluationScalarFieldEnum[]
   }
 
   /**
@@ -4508,32 +4545,46 @@ export namespace Prisma {
   export type EvaluationAvgAggregateOutputType = {
     id: number | null
     sectionId: number | null
+    createdBy: number | null
   }
 
   export type EvaluationSumAggregateOutputType = {
     id: number | null
     sectionId: number | null
+    createdBy: number | null
   }
 
   export type EvaluationMinAggregateOutputType = {
     id: number | null
     title: string | null
     description: string | null
+    deadline: Date | null
+    anonymous: boolean | null
     sectionId: number | null
+    createdBy: number | null
+    createdAt: Date | null
   }
 
   export type EvaluationMaxAggregateOutputType = {
     id: number | null
     title: string | null
     description: string | null
+    deadline: Date | null
+    anonymous: boolean | null
     sectionId: number | null
+    createdBy: number | null
+    createdAt: Date | null
   }
 
   export type EvaluationCountAggregateOutputType = {
     id: number
     title: number
     description: number
+    deadline: number
+    anonymous: number
     sectionId: number
+    createdBy: number
+    createdAt: number
     _all: number
   }
 
@@ -4541,32 +4592,46 @@ export namespace Prisma {
   export type EvaluationAvgAggregateInputType = {
     id?: true
     sectionId?: true
+    createdBy?: true
   }
 
   export type EvaluationSumAggregateInputType = {
     id?: true
     sectionId?: true
+    createdBy?: true
   }
 
   export type EvaluationMinAggregateInputType = {
     id?: true
     title?: true
     description?: true
+    deadline?: true
+    anonymous?: true
     sectionId?: true
+    createdBy?: true
+    createdAt?: true
   }
 
   export type EvaluationMaxAggregateInputType = {
     id?: true
     title?: true
     description?: true
+    deadline?: true
+    anonymous?: true
     sectionId?: true
+    createdBy?: true
+    createdAt?: true
   }
 
   export type EvaluationCountAggregateInputType = {
     id?: true
     title?: true
     description?: true
+    deadline?: true
+    anonymous?: true
     sectionId?: true
+    createdBy?: true
+    createdAt?: true
     _all?: true
   }
 
@@ -4660,7 +4725,11 @@ export namespace Prisma {
     id: number
     title: string
     description: string | null
+    deadline: Date | null
+    anonymous: boolean
     sectionId: number
+    createdBy: number
+    createdAt: Date
     _count: EvaluationCountAggregateOutputType | null
     _avg: EvaluationAvgAggregateOutputType | null
     _sum: EvaluationSumAggregateOutputType | null
@@ -4686,8 +4755,13 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     description?: boolean
+    deadline?: boolean
+    anonymous?: boolean
     sectionId?: boolean
+    createdBy?: boolean
+    createdAt?: boolean
     section?: boolean | SectionDefaultArgs<ExtArgs>
+    instructor?: boolean | UserDefaultArgs<ExtArgs>
     criteria?: boolean | Evaluation$criteriaArgs<ExtArgs>
     responses?: boolean | Evaluation$responsesArgs<ExtArgs>
     _count?: boolean | EvaluationCountOutputTypeDefaultArgs<ExtArgs>
@@ -4699,12 +4773,17 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     description?: boolean
+    deadline?: boolean
+    anonymous?: boolean
     sectionId?: boolean
+    createdBy?: boolean
+    createdAt?: boolean
   }
 
-  export type EvaluationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "sectionId", ExtArgs["result"]["evaluation"]>
+  export type EvaluationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "deadline" | "anonymous" | "sectionId" | "createdBy" | "createdAt", ExtArgs["result"]["evaluation"]>
   export type EvaluationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     section?: boolean | SectionDefaultArgs<ExtArgs>
+    instructor?: boolean | UserDefaultArgs<ExtArgs>
     criteria?: boolean | Evaluation$criteriaArgs<ExtArgs>
     responses?: boolean | Evaluation$responsesArgs<ExtArgs>
     _count?: boolean | EvaluationCountOutputTypeDefaultArgs<ExtArgs>
@@ -4714,6 +4793,7 @@ export namespace Prisma {
     name: "Evaluation"
     objects: {
       section: Prisma.$SectionPayload<ExtArgs>
+      instructor: Prisma.$UserPayload<ExtArgs>
       criteria: Prisma.$EvaluationCriteriaPayload<ExtArgs>[]
       responses: Prisma.$EvaluationResponsePayload<ExtArgs>[]
     }
@@ -4721,7 +4801,11 @@ export namespace Prisma {
       id: number
       title: string
       description: string | null
+      deadline: Date | null
+      anonymous: boolean
       sectionId: number
+      createdBy: number
+      createdAt: Date
     }, ExtArgs["result"]["evaluation"]>
     composites: {}
   }
@@ -5063,6 +5147,7 @@ export namespace Prisma {
   export interface Prisma__EvaluationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     section<T extends SectionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SectionDefaultArgs<ExtArgs>>): Prisma__SectionClient<$Result.GetResult<Prisma.$SectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    instructor<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     criteria<T extends Evaluation$criteriaArgs<ExtArgs> = {}>(args?: Subset<T, Evaluation$criteriaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EvaluationCriteriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     responses<T extends Evaluation$responsesArgs<ExtArgs> = {}>(args?: Subset<T, Evaluation$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EvaluationResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -5097,7 +5182,11 @@ export namespace Prisma {
     readonly id: FieldRef<"Evaluation", 'Int'>
     readonly title: FieldRef<"Evaluation", 'String'>
     readonly description: FieldRef<"Evaluation", 'String'>
+    readonly deadline: FieldRef<"Evaluation", 'DateTime'>
+    readonly anonymous: FieldRef<"Evaluation", 'Boolean'>
     readonly sectionId: FieldRef<"Evaluation", 'Int'>
+    readonly createdBy: FieldRef<"Evaluation", 'Int'>
+    readonly createdAt: FieldRef<"Evaluation", 'DateTime'>
   }
     
 
@@ -5531,19 +5620,19 @@ export namespace Prisma {
 
   export type EvaluationCriteriaMinAggregateOutputType = {
     id: number | null
-    name: string | null
+    criterionName: string | null
     evaluationId: number | null
   }
 
   export type EvaluationCriteriaMaxAggregateOutputType = {
     id: number | null
-    name: string | null
+    criterionName: string | null
     evaluationId: number | null
   }
 
   export type EvaluationCriteriaCountAggregateOutputType = {
     id: number
-    name: number
+    criterionName: number
     evaluationId: number
     _all: number
   }
@@ -5561,19 +5650,19 @@ export namespace Prisma {
 
   export type EvaluationCriteriaMinAggregateInputType = {
     id?: true
-    name?: true
+    criterionName?: true
     evaluationId?: true
   }
 
   export type EvaluationCriteriaMaxAggregateInputType = {
     id?: true
-    name?: true
+    criterionName?: true
     evaluationId?: true
   }
 
   export type EvaluationCriteriaCountAggregateInputType = {
     id?: true
-    name?: true
+    criterionName?: true
     evaluationId?: true
     _all?: true
   }
@@ -5666,7 +5755,7 @@ export namespace Prisma {
 
   export type EvaluationCriteriaGroupByOutputType = {
     id: number
-    name: string
+    criterionName: string
     evaluationId: number
     _count: EvaluationCriteriaCountAggregateOutputType | null
     _avg: EvaluationCriteriaAvgAggregateOutputType | null
@@ -5691,7 +5780,7 @@ export namespace Prisma {
 
   export type EvaluationCriteriaSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
+    criterionName?: boolean
     evaluationId?: boolean
     evaluation?: boolean | EvaluationDefaultArgs<ExtArgs>
     responses?: boolean | EvaluationCriteria$responsesArgs<ExtArgs>
@@ -5702,11 +5791,11 @@ export namespace Prisma {
 
   export type EvaluationCriteriaSelectScalar = {
     id?: boolean
-    name?: boolean
+    criterionName?: boolean
     evaluationId?: boolean
   }
 
-  export type EvaluationCriteriaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "evaluationId", ExtArgs["result"]["evaluationCriteria"]>
+  export type EvaluationCriteriaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "criterionName" | "evaluationId", ExtArgs["result"]["evaluationCriteria"]>
   export type EvaluationCriteriaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     evaluation?: boolean | EvaluationDefaultArgs<ExtArgs>
     responses?: boolean | EvaluationCriteria$responsesArgs<ExtArgs>
@@ -5721,7 +5810,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      name: string
+      criterionName: string
       evaluationId: number
     }, ExtArgs["result"]["evaluationCriteria"]>
     composites: {}
@@ -6095,7 +6184,7 @@ export namespace Prisma {
    */
   interface EvaluationCriteriaFieldRefs {
     readonly id: FieldRef<"EvaluationCriteria", 'Int'>
-    readonly name: FieldRef<"EvaluationCriteria", 'String'>
+    readonly criterionName: FieldRef<"EvaluationCriteria", 'String'>
     readonly evaluationId: FieldRef<"EvaluationCriteria", 'Int'>
   }
     
@@ -7539,7 +7628,11 @@ export namespace Prisma {
     id: 'id',
     title: 'title',
     description: 'description',
-    sectionId: 'sectionId'
+    deadline: 'deadline',
+    anonymous: 'anonymous',
+    sectionId: 'sectionId',
+    createdBy: 'createdBy',
+    createdAt: 'createdAt'
   };
 
   export type EvaluationScalarFieldEnum = (typeof EvaluationScalarFieldEnum)[keyof typeof EvaluationScalarFieldEnum]
@@ -7547,7 +7640,7 @@ export namespace Prisma {
 
   export const EvaluationCriteriaScalarFieldEnum: {
     id: 'id',
-    name: 'name',
+    criterionName: 'criterionName',
     evaluationId: 'evaluationId'
   };
 
@@ -7618,7 +7711,7 @@ export namespace Prisma {
 
 
   export const EvaluationCriteriaOrderByRelevanceFieldEnum: {
-    name: 'name'
+    criterionName: 'criterionName'
   };
 
   export type EvaluationCriteriaOrderByRelevanceFieldEnum = (typeof EvaluationCriteriaOrderByRelevanceFieldEnum)[keyof typeof EvaluationCriteriaOrderByRelevanceFieldEnum]
@@ -7651,6 +7744,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -7670,6 +7770,7 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     role?: StringFilter<"User"> | string
     sections?: SectionListRelationFilter
+    evaluations?: EvaluationListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -7679,6 +7780,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     sections?: SectionOrderByRelationAggregateInput
+    evaluations?: EvaluationOrderByRelationAggregateInput
     _relevance?: UserOrderByRelevanceInput
   }
 
@@ -7692,6 +7794,7 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     role?: StringFilter<"User"> | string
     sections?: SectionListRelationFilter
+    evaluations?: EvaluationListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -7853,8 +7956,13 @@ export namespace Prisma {
     id?: IntFilter<"Evaluation"> | number
     title?: StringFilter<"Evaluation"> | string
     description?: StringNullableFilter<"Evaluation"> | string | null
+    deadline?: DateTimeNullableFilter<"Evaluation"> | Date | string | null
+    anonymous?: BoolFilter<"Evaluation"> | boolean
     sectionId?: IntFilter<"Evaluation"> | number
+    createdBy?: IntFilter<"Evaluation"> | number
+    createdAt?: DateTimeFilter<"Evaluation"> | Date | string
     section?: XOR<SectionScalarRelationFilter, SectionWhereInput>
+    instructor?: XOR<UserScalarRelationFilter, UserWhereInput>
     criteria?: EvaluationCriteriaListRelationFilter
     responses?: EvaluationResponseListRelationFilter
   }
@@ -7863,8 +7971,13 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
+    deadline?: SortOrderInput | SortOrder
+    anonymous?: SortOrder
     sectionId?: SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
     section?: SectionOrderByWithRelationInput
+    instructor?: UserOrderByWithRelationInput
     criteria?: EvaluationCriteriaOrderByRelationAggregateInput
     responses?: EvaluationResponseOrderByRelationAggregateInput
     _relevance?: EvaluationOrderByRelevanceInput
@@ -7877,8 +7990,13 @@ export namespace Prisma {
     NOT?: EvaluationWhereInput | EvaluationWhereInput[]
     title?: StringFilter<"Evaluation"> | string
     description?: StringNullableFilter<"Evaluation"> | string | null
+    deadline?: DateTimeNullableFilter<"Evaluation"> | Date | string | null
+    anonymous?: BoolFilter<"Evaluation"> | boolean
     sectionId?: IntFilter<"Evaluation"> | number
+    createdBy?: IntFilter<"Evaluation"> | number
+    createdAt?: DateTimeFilter<"Evaluation"> | Date | string
     section?: XOR<SectionScalarRelationFilter, SectionWhereInput>
+    instructor?: XOR<UserScalarRelationFilter, UserWhereInput>
     criteria?: EvaluationCriteriaListRelationFilter
     responses?: EvaluationResponseListRelationFilter
   }, "id">
@@ -7887,7 +8005,11 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
+    deadline?: SortOrderInput | SortOrder
+    anonymous?: SortOrder
     sectionId?: SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
     _count?: EvaluationCountOrderByAggregateInput
     _avg?: EvaluationAvgOrderByAggregateInput
     _max?: EvaluationMaxOrderByAggregateInput
@@ -7902,7 +8024,11 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Evaluation"> | number
     title?: StringWithAggregatesFilter<"Evaluation"> | string
     description?: StringNullableWithAggregatesFilter<"Evaluation"> | string | null
+    deadline?: DateTimeNullableWithAggregatesFilter<"Evaluation"> | Date | string | null
+    anonymous?: BoolWithAggregatesFilter<"Evaluation"> | boolean
     sectionId?: IntWithAggregatesFilter<"Evaluation"> | number
+    createdBy?: IntWithAggregatesFilter<"Evaluation"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"Evaluation"> | Date | string
   }
 
   export type EvaluationCriteriaWhereInput = {
@@ -7910,7 +8036,7 @@ export namespace Prisma {
     OR?: EvaluationCriteriaWhereInput[]
     NOT?: EvaluationCriteriaWhereInput | EvaluationCriteriaWhereInput[]
     id?: IntFilter<"EvaluationCriteria"> | number
-    name?: StringFilter<"EvaluationCriteria"> | string
+    criterionName?: StringFilter<"EvaluationCriteria"> | string
     evaluationId?: IntFilter<"EvaluationCriteria"> | number
     evaluation?: XOR<EvaluationScalarRelationFilter, EvaluationWhereInput>
     responses?: EvaluationResponseListRelationFilter
@@ -7918,7 +8044,7 @@ export namespace Prisma {
 
   export type EvaluationCriteriaOrderByWithRelationInput = {
     id?: SortOrder
-    name?: SortOrder
+    criterionName?: SortOrder
     evaluationId?: SortOrder
     evaluation?: EvaluationOrderByWithRelationInput
     responses?: EvaluationResponseOrderByRelationAggregateInput
@@ -7930,7 +8056,7 @@ export namespace Prisma {
     AND?: EvaluationCriteriaWhereInput | EvaluationCriteriaWhereInput[]
     OR?: EvaluationCriteriaWhereInput[]
     NOT?: EvaluationCriteriaWhereInput | EvaluationCriteriaWhereInput[]
-    name?: StringFilter<"EvaluationCriteria"> | string
+    criterionName?: StringFilter<"EvaluationCriteria"> | string
     evaluationId?: IntFilter<"EvaluationCriteria"> | number
     evaluation?: XOR<EvaluationScalarRelationFilter, EvaluationWhereInput>
     responses?: EvaluationResponseListRelationFilter
@@ -7938,7 +8064,7 @@ export namespace Prisma {
 
   export type EvaluationCriteriaOrderByWithAggregationInput = {
     id?: SortOrder
-    name?: SortOrder
+    criterionName?: SortOrder
     evaluationId?: SortOrder
     _count?: EvaluationCriteriaCountOrderByAggregateInput
     _avg?: EvaluationCriteriaAvgOrderByAggregateInput
@@ -7952,7 +8078,7 @@ export namespace Prisma {
     OR?: EvaluationCriteriaScalarWhereWithAggregatesInput[]
     NOT?: EvaluationCriteriaScalarWhereWithAggregatesInput | EvaluationCriteriaScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"EvaluationCriteria"> | number
-    name?: StringWithAggregatesFilter<"EvaluationCriteria"> | string
+    criterionName?: StringWithAggregatesFilter<"EvaluationCriteria"> | string
     evaluationId?: IntWithAggregatesFilter<"EvaluationCriteria"> | number
   }
 
@@ -8033,6 +8159,7 @@ export namespace Prisma {
     password: string
     role: string
     sections?: SectionCreateNestedManyWithoutInstructorInput
+    evaluations?: EvaluationCreateNestedManyWithoutInstructorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -8042,6 +8169,7 @@ export namespace Prisma {
     password: string
     role: string
     sections?: SectionUncheckedCreateNestedManyWithoutInstructorInput
+    evaluations?: EvaluationUncheckedCreateNestedManyWithoutInstructorInput
   }
 
   export type UserUpdateInput = {
@@ -8050,6 +8178,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     sections?: SectionUpdateManyWithoutInstructorNestedInput
+    evaluations?: EvaluationUpdateManyWithoutInstructorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -8059,6 +8188,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     sections?: SectionUncheckedUpdateManyWithoutInstructorNestedInput
+    evaluations?: EvaluationUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -8207,7 +8337,11 @@ export namespace Prisma {
   export type EvaluationCreateInput = {
     title: string
     description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
+    createdAt?: Date | string
     section: SectionCreateNestedOneWithoutEvaluationsInput
+    instructor: UserCreateNestedOneWithoutEvaluationsInput
     criteria?: EvaluationCriteriaCreateNestedManyWithoutEvaluationInput
     responses?: EvaluationResponseCreateNestedManyWithoutEvaluationInput
   }
@@ -8216,7 +8350,11 @@ export namespace Prisma {
     id?: number
     title: string
     description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
     sectionId: number
+    createdBy: number
+    createdAt?: Date | string
     criteria?: EvaluationCriteriaUncheckedCreateNestedManyWithoutEvaluationInput
     responses?: EvaluationResponseUncheckedCreateNestedManyWithoutEvaluationInput
   }
@@ -8224,7 +8362,11 @@ export namespace Prisma {
   export type EvaluationUpdateInput = {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     section?: SectionUpdateOneRequiredWithoutEvaluationsNestedInput
+    instructor?: UserUpdateOneRequiredWithoutEvaluationsNestedInput
     criteria?: EvaluationCriteriaUpdateManyWithoutEvaluationNestedInput
     responses?: EvaluationResponseUpdateManyWithoutEvaluationNestedInput
   }
@@ -8233,7 +8375,11 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
     sectionId?: IntFieldUpdateOperationsInput | number
+    createdBy?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     criteria?: EvaluationCriteriaUncheckedUpdateManyWithoutEvaluationNestedInput
     responses?: EvaluationResponseUncheckedUpdateManyWithoutEvaluationNestedInput
   }
@@ -8242,60 +8388,71 @@ export namespace Prisma {
     id?: number
     title: string
     description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
     sectionId: number
+    createdBy: number
+    createdAt?: Date | string
   }
 
   export type EvaluationUpdateManyMutationInput = {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EvaluationUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
     sectionId?: IntFieldUpdateOperationsInput | number
+    createdBy?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EvaluationCriteriaCreateInput = {
-    name: string
+    criterionName: string
     evaluation: EvaluationCreateNestedOneWithoutCriteriaInput
     responses?: EvaluationResponseCreateNestedManyWithoutCriterionInput
   }
 
   export type EvaluationCriteriaUncheckedCreateInput = {
     id?: number
-    name: string
+    criterionName: string
     evaluationId: number
     responses?: EvaluationResponseUncheckedCreateNestedManyWithoutCriterionInput
   }
 
   export type EvaluationCriteriaUpdateInput = {
-    name?: StringFieldUpdateOperationsInput | string
+    criterionName?: StringFieldUpdateOperationsInput | string
     evaluation?: EvaluationUpdateOneRequiredWithoutCriteriaNestedInput
     responses?: EvaluationResponseUpdateManyWithoutCriterionNestedInput
   }
 
   export type EvaluationCriteriaUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
+    criterionName?: StringFieldUpdateOperationsInput | string
     evaluationId?: IntFieldUpdateOperationsInput | number
     responses?: EvaluationResponseUncheckedUpdateManyWithoutCriterionNestedInput
   }
 
   export type EvaluationCriteriaCreateManyInput = {
     id?: number
-    name: string
+    criterionName: string
     evaluationId: number
   }
 
   export type EvaluationCriteriaUpdateManyMutationInput = {
-    name?: StringFieldUpdateOperationsInput | string
+    criterionName?: StringFieldUpdateOperationsInput | string
   }
 
   export type EvaluationCriteriaUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
+    criterionName?: StringFieldUpdateOperationsInput | string
     evaluationId?: IntFieldUpdateOperationsInput | number
   }
 
@@ -8387,7 +8544,17 @@ export namespace Prisma {
     none?: SectionWhereInput
   }
 
+  export type EvaluationListRelationFilter = {
+    every?: EvaluationWhereInput
+    some?: EvaluationWhereInput
+    none?: EvaluationWhereInput
+  }
+
   export type SectionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EvaluationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -8500,22 +8667,12 @@ export namespace Prisma {
     none?: StudentWhereInput
   }
 
-  export type EvaluationListRelationFilter = {
-    every?: EvaluationWhereInput
-    some?: EvaluationWhereInput
-    none?: EvaluationWhereInput
-  }
-
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
   }
 
   export type StudentOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type EvaluationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -8646,6 +8803,22 @@ export namespace Prisma {
     sectionId?: SortOrder
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type EvaluationCriteriaListRelationFilter = {
     every?: EvaluationCriteriaWhereInput
     some?: EvaluationCriteriaWhereInput
@@ -8666,31 +8839,67 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    deadline?: SortOrder
+    anonymous?: SortOrder
     sectionId?: SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type EvaluationAvgOrderByAggregateInput = {
     id?: SortOrder
     sectionId?: SortOrder
+    createdBy?: SortOrder
   }
 
   export type EvaluationMaxOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    deadline?: SortOrder
+    anonymous?: SortOrder
     sectionId?: SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type EvaluationMinOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrder
+    deadline?: SortOrder
+    anonymous?: SortOrder
     sectionId?: SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type EvaluationSumOrderByAggregateInput = {
     id?: SortOrder
     sectionId?: SortOrder
+    createdBy?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type EvaluationScalarRelationFilter = {
@@ -8706,7 +8915,7 @@ export namespace Prisma {
 
   export type EvaluationCriteriaCountOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
+    criterionName?: SortOrder
     evaluationId?: SortOrder
   }
 
@@ -8717,13 +8926,13 @@ export namespace Prisma {
 
   export type EvaluationCriteriaMaxOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
+    criterionName?: SortOrder
     evaluationId?: SortOrder
   }
 
   export type EvaluationCriteriaMinOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
+    criterionName?: SortOrder
     evaluationId?: SortOrder
   }
 
@@ -8794,11 +9003,25 @@ export namespace Prisma {
     connect?: SectionWhereUniqueInput | SectionWhereUniqueInput[]
   }
 
+  export type EvaluationCreateNestedManyWithoutInstructorInput = {
+    create?: XOR<EvaluationCreateWithoutInstructorInput, EvaluationUncheckedCreateWithoutInstructorInput> | EvaluationCreateWithoutInstructorInput[] | EvaluationUncheckedCreateWithoutInstructorInput[]
+    connectOrCreate?: EvaluationCreateOrConnectWithoutInstructorInput | EvaluationCreateOrConnectWithoutInstructorInput[]
+    createMany?: EvaluationCreateManyInstructorInputEnvelope
+    connect?: EvaluationWhereUniqueInput | EvaluationWhereUniqueInput[]
+  }
+
   export type SectionUncheckedCreateNestedManyWithoutInstructorInput = {
     create?: XOR<SectionCreateWithoutInstructorInput, SectionUncheckedCreateWithoutInstructorInput> | SectionCreateWithoutInstructorInput[] | SectionUncheckedCreateWithoutInstructorInput[]
     connectOrCreate?: SectionCreateOrConnectWithoutInstructorInput | SectionCreateOrConnectWithoutInstructorInput[]
     createMany?: SectionCreateManyInstructorInputEnvelope
     connect?: SectionWhereUniqueInput | SectionWhereUniqueInput[]
+  }
+
+  export type EvaluationUncheckedCreateNestedManyWithoutInstructorInput = {
+    create?: XOR<EvaluationCreateWithoutInstructorInput, EvaluationUncheckedCreateWithoutInstructorInput> | EvaluationCreateWithoutInstructorInput[] | EvaluationUncheckedCreateWithoutInstructorInput[]
+    connectOrCreate?: EvaluationCreateOrConnectWithoutInstructorInput | EvaluationCreateOrConnectWithoutInstructorInput[]
+    createMany?: EvaluationCreateManyInstructorInputEnvelope
+    connect?: EvaluationWhereUniqueInput | EvaluationWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -8817,6 +9040,20 @@ export namespace Prisma {
     update?: SectionUpdateWithWhereUniqueWithoutInstructorInput | SectionUpdateWithWhereUniqueWithoutInstructorInput[]
     updateMany?: SectionUpdateManyWithWhereWithoutInstructorInput | SectionUpdateManyWithWhereWithoutInstructorInput[]
     deleteMany?: SectionScalarWhereInput | SectionScalarWhereInput[]
+  }
+
+  export type EvaluationUpdateManyWithoutInstructorNestedInput = {
+    create?: XOR<EvaluationCreateWithoutInstructorInput, EvaluationUncheckedCreateWithoutInstructorInput> | EvaluationCreateWithoutInstructorInput[] | EvaluationUncheckedCreateWithoutInstructorInput[]
+    connectOrCreate?: EvaluationCreateOrConnectWithoutInstructorInput | EvaluationCreateOrConnectWithoutInstructorInput[]
+    upsert?: EvaluationUpsertWithWhereUniqueWithoutInstructorInput | EvaluationUpsertWithWhereUniqueWithoutInstructorInput[]
+    createMany?: EvaluationCreateManyInstructorInputEnvelope
+    set?: EvaluationWhereUniqueInput | EvaluationWhereUniqueInput[]
+    disconnect?: EvaluationWhereUniqueInput | EvaluationWhereUniqueInput[]
+    delete?: EvaluationWhereUniqueInput | EvaluationWhereUniqueInput[]
+    connect?: EvaluationWhereUniqueInput | EvaluationWhereUniqueInput[]
+    update?: EvaluationUpdateWithWhereUniqueWithoutInstructorInput | EvaluationUpdateWithWhereUniqueWithoutInstructorInput[]
+    updateMany?: EvaluationUpdateManyWithWhereWithoutInstructorInput | EvaluationUpdateManyWithWhereWithoutInstructorInput[]
+    deleteMany?: EvaluationScalarWhereInput | EvaluationScalarWhereInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -8839,6 +9076,20 @@ export namespace Prisma {
     update?: SectionUpdateWithWhereUniqueWithoutInstructorInput | SectionUpdateWithWhereUniqueWithoutInstructorInput[]
     updateMany?: SectionUpdateManyWithWhereWithoutInstructorInput | SectionUpdateManyWithWhereWithoutInstructorInput[]
     deleteMany?: SectionScalarWhereInput | SectionScalarWhereInput[]
+  }
+
+  export type EvaluationUncheckedUpdateManyWithoutInstructorNestedInput = {
+    create?: XOR<EvaluationCreateWithoutInstructorInput, EvaluationUncheckedCreateWithoutInstructorInput> | EvaluationCreateWithoutInstructorInput[] | EvaluationUncheckedCreateWithoutInstructorInput[]
+    connectOrCreate?: EvaluationCreateOrConnectWithoutInstructorInput | EvaluationCreateOrConnectWithoutInstructorInput[]
+    upsert?: EvaluationUpsertWithWhereUniqueWithoutInstructorInput | EvaluationUpsertWithWhereUniqueWithoutInstructorInput[]
+    createMany?: EvaluationCreateManyInstructorInputEnvelope
+    set?: EvaluationWhereUniqueInput | EvaluationWhereUniqueInput[]
+    disconnect?: EvaluationWhereUniqueInput | EvaluationWhereUniqueInput[]
+    delete?: EvaluationWhereUniqueInput | EvaluationWhereUniqueInput[]
+    connect?: EvaluationWhereUniqueInput | EvaluationWhereUniqueInput[]
+    update?: EvaluationUpdateWithWhereUniqueWithoutInstructorInput | EvaluationUpdateWithWhereUniqueWithoutInstructorInput[]
+    updateMany?: EvaluationUpdateManyWithWhereWithoutInstructorInput | EvaluationUpdateManyWithWhereWithoutInstructorInput[]
+    deleteMany?: EvaluationScalarWhereInput | EvaluationScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSectionsInput = {
@@ -9051,6 +9302,12 @@ export namespace Prisma {
     connect?: SectionWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutEvaluationsInput = {
+    create?: XOR<UserCreateWithoutEvaluationsInput, UserUncheckedCreateWithoutEvaluationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEvaluationsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type EvaluationCriteriaCreateNestedManyWithoutEvaluationInput = {
     create?: XOR<EvaluationCriteriaCreateWithoutEvaluationInput, EvaluationCriteriaUncheckedCreateWithoutEvaluationInput> | EvaluationCriteriaCreateWithoutEvaluationInput[] | EvaluationCriteriaUncheckedCreateWithoutEvaluationInput[]
     connectOrCreate?: EvaluationCriteriaCreateOrConnectWithoutEvaluationInput | EvaluationCriteriaCreateOrConnectWithoutEvaluationInput[]
@@ -9079,12 +9336,28 @@ export namespace Prisma {
     connect?: EvaluationResponseWhereUniqueInput | EvaluationResponseWhereUniqueInput[]
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type SectionUpdateOneRequiredWithoutEvaluationsNestedInput = {
     create?: XOR<SectionCreateWithoutEvaluationsInput, SectionUncheckedCreateWithoutEvaluationsInput>
     connectOrCreate?: SectionCreateOrConnectWithoutEvaluationsInput
     upsert?: SectionUpsertWithoutEvaluationsInput
     connect?: SectionWhereUniqueInput
     update?: XOR<XOR<SectionUpdateToOneWithWhereWithoutEvaluationsInput, SectionUpdateWithoutEvaluationsInput>, SectionUncheckedUpdateWithoutEvaluationsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutEvaluationsNestedInput = {
+    create?: XOR<UserCreateWithoutEvaluationsInput, UserUncheckedCreateWithoutEvaluationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutEvaluationsInput
+    upsert?: UserUpsertWithoutEvaluationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutEvaluationsInput, UserUpdateWithoutEvaluationsInput>, UserUncheckedUpdateWithoutEvaluationsInput>
   }
 
   export type EvaluationCriteriaUpdateManyWithoutEvaluationNestedInput = {
@@ -9395,6 +9668,44 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type SectionCreateWithoutInstructorInput = {
     name: string
     description?: string | null
@@ -9419,6 +9730,39 @@ export namespace Prisma {
 
   export type SectionCreateManyInstructorInputEnvelope = {
     data: SectionCreateManyInstructorInput | SectionCreateManyInstructorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EvaluationCreateWithoutInstructorInput = {
+    title: string
+    description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
+    createdAt?: Date | string
+    section: SectionCreateNestedOneWithoutEvaluationsInput
+    criteria?: EvaluationCriteriaCreateNestedManyWithoutEvaluationInput
+    responses?: EvaluationResponseCreateNestedManyWithoutEvaluationInput
+  }
+
+  export type EvaluationUncheckedCreateWithoutInstructorInput = {
+    id?: number
+    title: string
+    description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
+    sectionId: number
+    createdAt?: Date | string
+    criteria?: EvaluationCriteriaUncheckedCreateNestedManyWithoutEvaluationInput
+    responses?: EvaluationResponseUncheckedCreateNestedManyWithoutEvaluationInput
+  }
+
+  export type EvaluationCreateOrConnectWithoutInstructorInput = {
+    where: EvaluationWhereUniqueInput
+    create: XOR<EvaluationCreateWithoutInstructorInput, EvaluationUncheckedCreateWithoutInstructorInput>
+  }
+
+  export type EvaluationCreateManyInstructorInputEnvelope = {
+    data: EvaluationCreateManyInstructorInput | EvaluationCreateManyInstructorInput[]
     skipDuplicates?: boolean
   }
 
@@ -9449,11 +9793,42 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Section"> | Date | string
   }
 
+  export type EvaluationUpsertWithWhereUniqueWithoutInstructorInput = {
+    where: EvaluationWhereUniqueInput
+    update: XOR<EvaluationUpdateWithoutInstructorInput, EvaluationUncheckedUpdateWithoutInstructorInput>
+    create: XOR<EvaluationCreateWithoutInstructorInput, EvaluationUncheckedCreateWithoutInstructorInput>
+  }
+
+  export type EvaluationUpdateWithWhereUniqueWithoutInstructorInput = {
+    where: EvaluationWhereUniqueInput
+    data: XOR<EvaluationUpdateWithoutInstructorInput, EvaluationUncheckedUpdateWithoutInstructorInput>
+  }
+
+  export type EvaluationUpdateManyWithWhereWithoutInstructorInput = {
+    where: EvaluationScalarWhereInput
+    data: XOR<EvaluationUpdateManyMutationInput, EvaluationUncheckedUpdateManyWithoutInstructorInput>
+  }
+
+  export type EvaluationScalarWhereInput = {
+    AND?: EvaluationScalarWhereInput | EvaluationScalarWhereInput[]
+    OR?: EvaluationScalarWhereInput[]
+    NOT?: EvaluationScalarWhereInput | EvaluationScalarWhereInput[]
+    id?: IntFilter<"Evaluation"> | number
+    title?: StringFilter<"Evaluation"> | string
+    description?: StringNullableFilter<"Evaluation"> | string | null
+    deadline?: DateTimeNullableFilter<"Evaluation"> | Date | string | null
+    anonymous?: BoolFilter<"Evaluation"> | boolean
+    sectionId?: IntFilter<"Evaluation"> | number
+    createdBy?: IntFilter<"Evaluation"> | number
+    createdAt?: DateTimeFilter<"Evaluation"> | Date | string
+  }
+
   export type UserCreateWithoutSectionsInput = {
     name: string
     email: string
     password: string
     role: string
+    evaluations?: EvaluationCreateNestedManyWithoutInstructorInput
   }
 
   export type UserUncheckedCreateWithoutSectionsInput = {
@@ -9462,6 +9837,7 @@ export namespace Prisma {
     email: string
     password: string
     role: string
+    evaluations?: EvaluationUncheckedCreateNestedManyWithoutInstructorInput
   }
 
   export type UserCreateOrConnectWithoutSectionsInput = {
@@ -9499,6 +9875,10 @@ export namespace Prisma {
   export type EvaluationCreateWithoutSectionInput = {
     title: string
     description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
+    createdAt?: Date | string
+    instructor: UserCreateNestedOneWithoutEvaluationsInput
     criteria?: EvaluationCriteriaCreateNestedManyWithoutEvaluationInput
     responses?: EvaluationResponseCreateNestedManyWithoutEvaluationInput
   }
@@ -9507,6 +9887,10 @@ export namespace Prisma {
     id?: number
     title: string
     description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
+    createdBy: number
+    createdAt?: Date | string
     criteria?: EvaluationCriteriaUncheckedCreateNestedManyWithoutEvaluationInput
     responses?: EvaluationResponseUncheckedCreateNestedManyWithoutEvaluationInput
   }
@@ -9537,6 +9921,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    evaluations?: EvaluationUpdateManyWithoutInstructorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSectionsInput = {
@@ -9545,6 +9930,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    evaluations?: EvaluationUncheckedUpdateManyWithoutInstructorNestedInput
   }
 
   export type StudentUpsertWithWhereUniqueWithoutSectionInput = {
@@ -9588,16 +9974,6 @@ export namespace Prisma {
   export type EvaluationUpdateManyWithWhereWithoutSectionInput = {
     where: EvaluationScalarWhereInput
     data: XOR<EvaluationUpdateManyMutationInput, EvaluationUncheckedUpdateManyWithoutSectionInput>
-  }
-
-  export type EvaluationScalarWhereInput = {
-    AND?: EvaluationScalarWhereInput | EvaluationScalarWhereInput[]
-    OR?: EvaluationScalarWhereInput[]
-    NOT?: EvaluationScalarWhereInput | EvaluationScalarWhereInput[]
-    id?: IntFilter<"Evaluation"> | number
-    title?: StringFilter<"Evaluation"> | string
-    description?: StringNullableFilter<"Evaluation"> | string | null
-    sectionId?: IntFilter<"Evaluation"> | number
   }
 
   export type SectionCreateWithoutStudentsInput = {
@@ -9766,14 +10142,36 @@ export namespace Prisma {
     create: XOR<SectionCreateWithoutEvaluationsInput, SectionUncheckedCreateWithoutEvaluationsInput>
   }
 
-  export type EvaluationCriteriaCreateWithoutEvaluationInput = {
+  export type UserCreateWithoutEvaluationsInput = {
     name: string
+    email: string
+    password: string
+    role: string
+    sections?: SectionCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserUncheckedCreateWithoutEvaluationsInput = {
+    id?: number
+    name: string
+    email: string
+    password: string
+    role: string
+    sections?: SectionUncheckedCreateNestedManyWithoutInstructorInput
+  }
+
+  export type UserCreateOrConnectWithoutEvaluationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutEvaluationsInput, UserUncheckedCreateWithoutEvaluationsInput>
+  }
+
+  export type EvaluationCriteriaCreateWithoutEvaluationInput = {
+    criterionName: string
     responses?: EvaluationResponseCreateNestedManyWithoutCriterionInput
   }
 
   export type EvaluationCriteriaUncheckedCreateWithoutEvaluationInput = {
     id?: number
-    name: string
+    criterionName: string
     responses?: EvaluationResponseUncheckedCreateNestedManyWithoutCriterionInput
   }
 
@@ -9840,6 +10238,34 @@ export namespace Prisma {
     students?: StudentUncheckedUpdateManyWithoutSectionNestedInput
   }
 
+  export type UserUpsertWithoutEvaluationsInput = {
+    update: XOR<UserUpdateWithoutEvaluationsInput, UserUncheckedUpdateWithoutEvaluationsInput>
+    create: XOR<UserCreateWithoutEvaluationsInput, UserUncheckedCreateWithoutEvaluationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutEvaluationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutEvaluationsInput, UserUncheckedUpdateWithoutEvaluationsInput>
+  }
+
+  export type UserUpdateWithoutEvaluationsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    sections?: SectionUpdateManyWithoutInstructorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutEvaluationsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    sections?: SectionUncheckedUpdateManyWithoutInstructorNestedInput
+  }
+
   export type EvaluationCriteriaUpsertWithWhereUniqueWithoutEvaluationInput = {
     where: EvaluationCriteriaWhereUniqueInput
     update: XOR<EvaluationCriteriaUpdateWithoutEvaluationInput, EvaluationCriteriaUncheckedUpdateWithoutEvaluationInput>
@@ -9861,7 +10287,7 @@ export namespace Prisma {
     OR?: EvaluationCriteriaScalarWhereInput[]
     NOT?: EvaluationCriteriaScalarWhereInput | EvaluationCriteriaScalarWhereInput[]
     id?: IntFilter<"EvaluationCriteria"> | number
-    name?: StringFilter<"EvaluationCriteria"> | string
+    criterionName?: StringFilter<"EvaluationCriteria"> | string
     evaluationId?: IntFilter<"EvaluationCriteria"> | number
   }
 
@@ -9884,7 +10310,11 @@ export namespace Prisma {
   export type EvaluationCreateWithoutCriteriaInput = {
     title: string
     description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
+    createdAt?: Date | string
     section: SectionCreateNestedOneWithoutEvaluationsInput
+    instructor: UserCreateNestedOneWithoutEvaluationsInput
     responses?: EvaluationResponseCreateNestedManyWithoutEvaluationInput
   }
 
@@ -9892,7 +10322,11 @@ export namespace Prisma {
     id?: number
     title: string
     description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
     sectionId: number
+    createdBy: number
+    createdAt?: Date | string
     responses?: EvaluationResponseUncheckedCreateNestedManyWithoutEvaluationInput
   }
 
@@ -9940,7 +10374,11 @@ export namespace Prisma {
   export type EvaluationUpdateWithoutCriteriaInput = {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     section?: SectionUpdateOneRequiredWithoutEvaluationsNestedInput
+    instructor?: UserUpdateOneRequiredWithoutEvaluationsNestedInput
     responses?: EvaluationResponseUpdateManyWithoutEvaluationNestedInput
   }
 
@@ -9948,7 +10386,11 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
     sectionId?: IntFieldUpdateOperationsInput | number
+    createdBy?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     responses?: EvaluationResponseUncheckedUpdateManyWithoutEvaluationNestedInput
   }
 
@@ -9971,7 +10413,11 @@ export namespace Prisma {
   export type EvaluationCreateWithoutResponsesInput = {
     title: string
     description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
+    createdAt?: Date | string
     section: SectionCreateNestedOneWithoutEvaluationsInput
+    instructor: UserCreateNestedOneWithoutEvaluationsInput
     criteria?: EvaluationCriteriaCreateNestedManyWithoutEvaluationInput
   }
 
@@ -9979,7 +10425,11 @@ export namespace Prisma {
     id?: number
     title: string
     description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
     sectionId: number
+    createdBy: number
+    createdAt?: Date | string
     criteria?: EvaluationCriteriaUncheckedCreateNestedManyWithoutEvaluationInput
   }
 
@@ -10033,13 +10483,13 @@ export namespace Prisma {
   }
 
   export type EvaluationCriteriaCreateWithoutResponsesInput = {
-    name: string
+    criterionName: string
     evaluation: EvaluationCreateNestedOneWithoutCriteriaInput
   }
 
   export type EvaluationCriteriaUncheckedCreateWithoutResponsesInput = {
     id?: number
-    name: string
+    criterionName: string
     evaluationId: number
   }
 
@@ -10062,7 +10512,11 @@ export namespace Prisma {
   export type EvaluationUpdateWithoutResponsesInput = {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     section?: SectionUpdateOneRequiredWithoutEvaluationsNestedInput
+    instructor?: UserUpdateOneRequiredWithoutEvaluationsNestedInput
     criteria?: EvaluationCriteriaUpdateManyWithoutEvaluationNestedInput
   }
 
@@ -10070,7 +10524,11 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
     sectionId?: IntFieldUpdateOperationsInput | number
+    createdBy?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     criteria?: EvaluationCriteriaUncheckedUpdateManyWithoutEvaluationNestedInput
   }
 
@@ -10142,13 +10600,13 @@ export namespace Prisma {
   }
 
   export type EvaluationCriteriaUpdateWithoutResponsesInput = {
-    name?: StringFieldUpdateOperationsInput | string
+    criterionName?: StringFieldUpdateOperationsInput | string
     evaluation?: EvaluationUpdateOneRequiredWithoutCriteriaNestedInput
   }
 
   export type EvaluationCriteriaUncheckedUpdateWithoutResponsesInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
+    criterionName?: StringFieldUpdateOperationsInput | string
     evaluationId?: IntFieldUpdateOperationsInput | number
   }
 
@@ -10156,6 +10614,16 @@ export namespace Prisma {
     id?: number
     name: string
     description?: string | null
+    createdAt?: Date | string
+  }
+
+  export type EvaluationCreateManyInstructorInput = {
+    id?: number
+    title: string
+    description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
+    sectionId: number
     createdAt?: Date | string
   }
 
@@ -10183,6 +10651,39 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EvaluationUpdateWithoutInstructorInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    section?: SectionUpdateOneRequiredWithoutEvaluationsNestedInput
+    criteria?: EvaluationCriteriaUpdateManyWithoutEvaluationNestedInput
+    responses?: EvaluationResponseUpdateManyWithoutEvaluationNestedInput
+  }
+
+  export type EvaluationUncheckedUpdateWithoutInstructorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
+    sectionId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    criteria?: EvaluationCriteriaUncheckedUpdateManyWithoutEvaluationNestedInput
+    responses?: EvaluationResponseUncheckedUpdateManyWithoutEvaluationNestedInput
+  }
+
+  export type EvaluationUncheckedUpdateManyWithoutInstructorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
+    sectionId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StudentCreateManySectionInput = {
     id?: number
     name: string
@@ -10194,6 +10695,10 @@ export namespace Prisma {
     id?: number
     title: string
     description?: string | null
+    deadline?: Date | string | null
+    anonymous?: boolean
+    createdBy: number
+    createdAt?: Date | string
   }
 
   export type StudentUpdateWithoutSectionInput = {
@@ -10223,6 +10728,10 @@ export namespace Prisma {
   export type EvaluationUpdateWithoutSectionInput = {
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    instructor?: UserUpdateOneRequiredWithoutEvaluationsNestedInput
     criteria?: EvaluationCriteriaUpdateManyWithoutEvaluationNestedInput
     responses?: EvaluationResponseUpdateManyWithoutEvaluationNestedInput
   }
@@ -10231,6 +10740,10 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdBy?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     criteria?: EvaluationCriteriaUncheckedUpdateManyWithoutEvaluationNestedInput
     responses?: EvaluationResponseUncheckedUpdateManyWithoutEvaluationNestedInput
   }
@@ -10239,6 +10752,10 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    anonymous?: BoolFieldUpdateOperationsInput | boolean
+    createdBy?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EvaluationResponseCreateManyEvaluatorStudentInput = {
@@ -10305,7 +10822,7 @@ export namespace Prisma {
 
   export type EvaluationCriteriaCreateManyEvaluationInput = {
     id?: number
-    name: string
+    criterionName: string
   }
 
   export type EvaluationResponseCreateManyEvaluationInput = {
@@ -10317,19 +10834,19 @@ export namespace Prisma {
   }
 
   export type EvaluationCriteriaUpdateWithoutEvaluationInput = {
-    name?: StringFieldUpdateOperationsInput | string
+    criterionName?: StringFieldUpdateOperationsInput | string
     responses?: EvaluationResponseUpdateManyWithoutCriterionNestedInput
   }
 
   export type EvaluationCriteriaUncheckedUpdateWithoutEvaluationInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
+    criterionName?: StringFieldUpdateOperationsInput | string
     responses?: EvaluationResponseUncheckedUpdateManyWithoutCriterionNestedInput
   }
 
   export type EvaluationCriteriaUncheckedUpdateManyWithoutEvaluationInput = {
     id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
+    criterionName?: StringFieldUpdateOperationsInput | string
   }
 
   export type EvaluationResponseUpdateWithoutEvaluationInput = {

@@ -57,6 +57,9 @@ export const api = {
 
     students: (sectionId: number) =>
       request<Student[]>(`/sections/${sectionId}/students`),
+
+    delete: (sectionId: number) =>
+      request<{ message: string }>(`/sections/${sectionId}`, { method: "DELETE" }),
   },
 
   // ─── STUDENTS ──────────────────────────────────────────────────────────────
@@ -64,6 +67,9 @@ export const api = {
   students: {
     create: (data: { name: string; email: string; studentId?: string; sectionId: number }) =>
       request<Student>("/students", { method: "POST", body: JSON.stringify(data) }),
+
+    delete: (studentId: number) =>
+      request<{ message: string }>(`/students/${studentId}`, { method: "DELETE" }),
 
     import: async (file: File, sectionId: number) => {
       const token = getToken();
@@ -93,7 +99,7 @@ export const api = {
 
     get: (id: number) => request<Evaluation>(`/evaluations/${id}`),
 
-    create: (data: { title: string; description?: string; sectionId: number; criteria: string[] }) =>
+    create: (data: { title: string; description?: string; sectionId: number; deadline?: string; anonymous?: boolean;criteria: string[] }) =>
       request<Evaluation>("/evaluations", { method: "POST", body: JSON.stringify(data) }),
 
     submit: (

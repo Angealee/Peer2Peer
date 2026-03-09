@@ -148,12 +148,16 @@ exports.Prisma.EvaluationScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
-  sectionId: 'sectionId'
+  deadline: 'deadline',
+  anonymous: 'anonymous',
+  sectionId: 'sectionId',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.EvaluationCriteriaScalarFieldEnum = {
   id: 'id',
-  name: 'name',
+  criterionName: 'criterionName',
   evaluationId: 'evaluationId'
 };
 
@@ -200,7 +204,7 @@ exports.Prisma.EvaluationOrderByRelevanceFieldEnum = {
 };
 
 exports.Prisma.EvaluationCriteriaOrderByRelevanceFieldEnum = {
-  name: 'name'
+  criterionName: 'criterionName'
 };
 
 

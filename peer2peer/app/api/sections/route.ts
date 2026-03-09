@@ -1,6 +1,6 @@
 // app/api/sections/route.ts
-// GET /api/sections  — list all sections for the logged-in instructor
-// POST /api/sections — create a new section
+// GET  /api/sections  — list all sections for the logged-in instructor
+// POST /api/sections  — create a new section
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     const user = requireAdmin(req);
 
     const sections = await prisma.section.findMany({
-      where: { createdBy: user.userId },
+      where: { createdBy: user.id },
       include: { _count: { select: { students: true } } },
       orderBy: { createdAt: "desc" },
     });
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(sections);
   } catch (err: any) {
     if (err.message === "UNAUTHORIZED") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    if (err.message === "FORBIDDEN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (err.message === "FORBIDDEN")    return NextResponse.json({ error: "Forbidden" },    { status: 403 });
     console.error("[GET /api/sections]", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
@@ -35,13 +35,13 @@ export async function POST(req: NextRequest) {
     }
 
     const section = await prisma.section.create({
-      data: { name, description, createdBy: user.userId },
+      data: { name, description, createdBy: user.id },
     });
 
     return NextResponse.json(section, { status: 201 });
   } catch (err: any) {
     if (err.message === "UNAUTHORIZED") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    if (err.message === "FORBIDDEN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (err.message === "FORBIDDEN")    return NextResponse.json({ error: "Forbidden" },    { status: 403 });
     console.error("[POST /api/sections]", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

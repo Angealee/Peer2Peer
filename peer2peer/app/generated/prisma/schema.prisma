@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../app/generated/prisma"
+  provider        = "prisma-client-js"
+  output          = "../app/generated/prisma"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -14,7 +15,8 @@ model User {
   password String
   role     String
 
-  sections Section[]
+  sections    Section[]
+  evaluations Evaluation[]
 }
 
 model Section {
@@ -45,21 +47,27 @@ model Student {
 }
 
 model Evaluation {
-  id          Int     @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   description String?
+  deadline    DateTime?
+  anonymous   Boolean   @default(true)
 
   sectionId Int
   section   Section @relation(fields: [sectionId], references: [id])
 
-  criteria EvaluationCriteria[]
+  createdBy  Int
+  instructor User @relation(fields: [createdBy], references: [id])
 
+  criteria  EvaluationCriteria[]
   responses EvaluationResponse[]
+
+  createdAt DateTime @default(now())
 }
 
 model EvaluationCriteria {
-  id   Int    @id @default(autoincrement())
-  name String
+  id            Int    @id @default(autoincrement())
+  criterionName String
 
   evaluationId Int
   evaluation   Evaluation @relation(fields: [evaluationId], references: [id])

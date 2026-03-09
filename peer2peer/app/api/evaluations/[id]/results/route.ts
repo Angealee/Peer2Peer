@@ -1,134 +1,83 @@
 // app/api/evaluations/[id]/results/route.ts
 // GET /api/evaluations/:id/results
-//
-// Returns aggregated peer evaluation results per student per criterion.
-// Shape:
-// {
-//   evaluationId: number,
-//   title: string,
-//   results: [
-//     {
-//       student: { id, name, email },
-//       scores: [
-//         { criterion: string, average: number, count: number },
-//         ...
-//       ],
-//       overallAverage: number
-//     },
-//     ...
-//   ]
-// }
-
-// app/api/evaluations/[id]/results/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin } from "@/lib/auth";
+import { verifyToken } from "@/lib/auth";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // ← Next.js 15
 ) {
   try {
-    const user = requireAdmin(req);
-    const evaluationId = parseInt(params.id);
+    const token = req.headers.get("authorization")?.split(" ")[1];
+    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    verifyToken(token);
 
-    // Verify evaluation exists
+    const { id } = await params; // ← await before use
+    const evaluationId = parseInt(id);
+
     const evaluation = await prisma.evaluation.findUnique({
       where: { id: evaluationId },
-      include: { criteria: true },
-    });
-
-    if (!evaluation) {
-      return NextResponse.json(
-        { error: "Evaluation not found" },
-        { status: 404 }
-      );
-    }
-
-    // Fetch all responses
-    const responses = await prisma.evaluationResponse.findMany({
-      where: { evaluationId },
       include: {
-        evaluatedStudent: true,
-        criterion: true,
+        criteria: true,
+        responses: {
+          include: {
+            evaluatedStudent: true,
+            criterion: true,
+          },
+        },
+        section: { include: { students: true } },
       },
     });
 
-    // Group by evaluated student → criterion
-    const studentMap = new Map<
-      number,
-      {
-        student: { id: number; name: string; email: string };
-        criterionScores: Map<string, number[]>;
-      }
-    >();
-
-    for (const r of responses) {
-      if (!studentMap.has(r.evaluatedStudentId)) {
-        studentMap.set(r.evaluatedStudentId, {
-          student: {
-            id: r.evaluatedStudent.id,
-            name: r.evaluatedStudent.name,
-            email: r.evaluatedStudent.email,
-          },
-          criterionScores: new Map(),
-        });
-      }
-
-      const entry = studentMap.get(r.evaluatedStudentId)!;
-      const criterionName = r.criterion.name;
-
-      if (!entry.criterionScores.has(criterionName)) {
-        entry.criterionScores.set(criterionName, []);
-      }
-
-      entry.criterionScores.get(criterionName)!.push(r.score);
+    if (!evaluation) {
+      return NextResponse.json({ error: "Evaluation not found" }, { status: 404 });
     }
 
-    // Build results array
-    const results = Array.from(studentMap.values()).map(
-      ({ student, criterionScores }) => {
-        const scores = Array.from(criterionScores.entries()).map(
-          ([criterion, values]) => ({
-            criterion,
-            average: parseFloat(
-              (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2)
-            ),
-            count: values.length,
-          })
-        );
+    // Group responses by evaluated student
+    const studentMap = new Map<number, {
+      student: { id: number; name: string; email: string };
+      scores: Map<string, { total: number; count: number }>;
+    }>();
 
-        const overallAverage =
-          scores.length > 0
-            ? parseFloat(
-                (
-                  scores.reduce((a, b) => a + b.average, 0) / scores.length
-                ).toFixed(2)
-              )
-            : 0;
+    for (const student of evaluation.section.students) {
+      studentMap.set(student.id, {
+        student: { id: student.id, name: student.name, email: student.email },
+        scores: new Map(),
+      });
+    }
 
-        return { student, scores, overallAverage };
-      }
-    );
+    for (const response of evaluation.responses) {
+      const entry = studentMap.get(response.evaluatedStudentId);
+      if (!entry) continue;
+      const criterionName = response.criterion.criterionName;
+      const existing = entry.scores.get(criterionName) ?? { total: 0, count: 0 };
+      existing.total += response.score;
+      existing.count += 1;
+      entry.scores.set(criterionName, existing);
+    }
 
-    // Sort by highest average
-    results.sort((a, b) => b.overallAverage - a.overallAverage);
+    const results = Array.from(studentMap.values()).map(({ student, scores }) => {
+      const scoreArray = Array.from(scores.entries()).map(([criterion, { total, count }]) => ({
+        criterion,
+        average: count > 0 ? Math.round((total / count) * 100) / 100 : 0,
+        count,
+      }));
+      const overallAverage =
+        scoreArray.length > 0
+          ? Math.round((scoreArray.reduce((s, c) => s + c.average, 0) / scoreArray.length) * 100) / 100
+          : 0;
+      return { student, scores: scoreArray, overallAverage };
+    });
 
     return NextResponse.json({
       evaluationId,
       title: evaluation.title,
       results,
     });
-  } catch (err: any) {
-    if (err.message === "UNAUTHORIZED")
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
+  } catch (err) {
     console.error("[GET /api/evaluations/:id/results]", err);
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
