@@ -1,0 +1,92 @@
+.container {
+  padding: 0.5rem;
+  max-width: 900px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  color: #111827;
+  width: 100%;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+/* Accordion Card */
+
+.accordionCard {
+  background: rgb(222, 230, 230);
+  border-radius: 9px;
+  border: 1px solid #000000;
+  overflow: hidden;
+  color: #000000;
+  transition: all 0.18s ease;
+}
+.accordionCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.accordionHeader {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  background: #f9fafb;
+  border: none;
+  cursor: pointer;
+}
+
+.accordionContent {
+  padding: 1rem;
+}
+
+/* Summary */
+
+.summaryGrid {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.card {
+  flex: 1;
+  background: #f9fafb;
+  padding: 0.8rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.card h3 {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.card p {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Table */
+
+.tableCard {
+  margin-top: 0.5rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  border-bottom: 2px solid #e5e7eb;
+  padding: 0.6rem;
+}
+
+.table td {
+  padding: 0.6rem;
+  border-bottom: 1px solid #f3f4f6;
+}

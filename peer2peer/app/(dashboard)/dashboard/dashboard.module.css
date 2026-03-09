@@ -1,0 +1,250 @@
+.layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #0f1623;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 240px;
+  background: linear-gradient(180deg, #111827 0%, #0d1320 100%);
+  color: white;
+  padding: 1.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(29, 207, 216, 0.12);
+  flex-shrink: 0;
+}
+
+.logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  color: rgb(29, 207, 216);
+  letter-spacing: 0.04em;
+  padding: 0 0.5rem;
+}
+
+.navItem {
+  padding: 0.7rem 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 0.3rem;
+  transition: all 0.18s ease;
+  font-size: 0.88rem;
+  color: #94a3b8;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.navItem:hover {
+  background-color: rgba(29, 207, 216, 0.1);
+  color: rgb(29, 207, 216);
+  transform: translateX(3px);
+}
+
+.navItemActive {
+  background-color: rgba(29, 207, 216, 0.15);
+  color: rgb(29, 207, 216);
+  border-left: 3px solid rgb(29, 207, 216);
+  padding-left: calc(0.85rem - 3px);
+}
+
+/* ── Main ── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+  background-color: rgba(7, 17, 61, 0.178);
+}
+
+/* ── Header ── */
+.header {
+  height: 58px;
+  background: linear-gradient(90deg, #e09b1a 0%, #f5b429 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.75rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: #111827;
+  box-shadow: 0 2px 12px rgba(224, 155, 26, 0.3);
+  letter-spacing: 0.01em;
+  flex-shrink: 0;
+}
+
+/* ── Scrollable Content ── */
+.content {
+  flex: 1;
+  padding: 0.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25
+}
+
+/* ── Page Title ── */
+.title {
+  font-size: 2rem;
+  font-weight: 750;
+  color: #ffffff;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+/* ── KPI Grid ── */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+/* ── KPI Card ── */
+.card {
+  background: linear-gradient(135deg, rgb(29, 207, 216) 0%, rgb(20, 184, 166) 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(29, 207, 216, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px rgba(29, 207, 216, 0.3);
+}
+
+.cardTitle {
+  font-size: 0.78rem;
+  color: rgba(15, 23, 42, 0.7);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cardValue {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-top: 0.4rem;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+}
+
+/* ── Section Containers ── */
+.section {
+  background: white;
+  width: 85%;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section h2 {
+  margin-bottom: 1rem;
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ── Progress Bars ── */
+.progressItem {
+  margin-bottom: 1rem;
+}
+
+.progressLabel {
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #334155;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progressBar {
+  background-color: #e2e8f0;
+  height: 8px;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progressFill {
+  background: linear-gradient(90deg, rgb(29, 207, 216), rgb(20, 184, 166));
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Activity Feed ── */
+.activityList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activityList li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  color: #475569;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.activityList li:last-child {
+  border-bottom: none;
+}
+
+/* ── Button Row ── */
+.buttonRow {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.buttonRow button {
+  padding: 9px 18px;
+  background-color: #111827;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.buttonRow button:hover {
+  background-color: rgb(29, 207, 216);
+  color: #111827;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(29, 207, 216, 0.3);
+}

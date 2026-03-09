@@ -9,7 +9,7 @@
 
 .card {
   width: 450px;
-  height: 520px;
+  height: 640px;
   padding-top : 0rem;
   padding-bottom: 3rem;
   padding-left: 3rem;
@@ -59,7 +59,7 @@
 }
 
 .button:hover {
-  background-color: #0e4e19;
+  background-color: #1833ac;
   animation: gradientShift 3s ease infinite;
 }
 
