@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
 
     // Verify section ownership
     const section = await prisma.section.findFirst({
-      where: { id: Number(sectionId), createdBy: user.userId },
+      where: { id: Number(sectionId), createdBy: user.id },
     });
     if (!section) {
       return NextResponse.json({ error: "Section not found" }, { status: 404 });

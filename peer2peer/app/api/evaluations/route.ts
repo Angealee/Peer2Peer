@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     const user = requireAdmin(req);
 
     const evaluations = await prisma.evaluation.findMany({
-      where: { createdBy: user.userId },
+      where: { createdBy: user.id },
       include: {
         section: { select: { name: true } },
         criteria: true,
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
     // Verify section ownership
     const section = await prisma.section.findFirst({
-      where: { id: Number(sectionId), createdBy: user.userId },
+      where: { id: Number(sectionId), createdBy: user.id },
     });
     if (!section) {
       return NextResponse.json({ error: "Section not found" }, { status: 404 });
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
         title,
         description,
         sectionId: Number(sectionId),
-        createdBy: user.userId,
+        createdBy: user.id,
         criteria: {
           create: (criteria as string[]).map((name) => ({ criterionName: name })),
         },

@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
   } catch (err: any) {
     if (err.message === "UNAUTHORIZED") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     if (err.message === "FORBIDDEN")    return NextResponse.json({ error: "Forbidden" },    { status: 403 });
-    console.error("[POST /api/sections]", err);
+    console.error("[POST /api/sections] FULL:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
