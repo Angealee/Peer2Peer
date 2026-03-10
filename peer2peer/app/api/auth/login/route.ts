@@ -24,14 +24,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    const token = signToken({ userId: user.id, email: user.email, role: user.role });
+    const token = signToken({ id: user.id, email: user.email, role: user.role });
 
     return NextResponse.json({
       token,
       user: { id: user.id, name: user.name, email: user.email, role: user.role },
     });
   } catch (err) {
-    console.error("[POST /api/auth/login]", err);
+    console.error("[POST /api/auth/login] FULL ERROR:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

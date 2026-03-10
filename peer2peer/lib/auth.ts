@@ -9,7 +9,6 @@ const EXPIRES_IN = "7d";
 
 // ── Payload stored inside the JWT ─────────────────────
 export interface JWTPayload {
-  userId: any;
   id: number;
   email: string;
   role: string;
