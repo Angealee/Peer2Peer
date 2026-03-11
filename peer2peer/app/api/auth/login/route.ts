@@ -24,7 +24,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    const token = signToken({ userId: user.id, email: user.email, role: user.role });
+    // Use `id` (not `userId`) — must match JWTPayload interface in lib/auth.ts
+    const token = signToken({ id: user.id, email: user.email, role: user.role });
 
     return NextResponse.json({
       token,
