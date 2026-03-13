@@ -1,0 +1,10 @@
+Supabase: AngealeTeam
+peer2peer
+Pillowsbed2402.
+
+URI:
+postgresql://postgres:Pillowsbed2402@db.fnvklgnrowcshdasicsu.supabase.co:5432/postgres
+
+
+Session Pooler:
+postgresql://postgres.fnvklgnrowcshdasicsu:[YOUR-PASSWORD]@aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres

@@ -175,36 +175,14 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
-exports.Prisma.UserOrderByRelevanceFieldEnum = {
-  name: 'name',
-  email: 'email',
-  password: 'password',
-  role: 'role'
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
 };
 
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
-};
-
-exports.Prisma.SectionOrderByRelevanceFieldEnum = {
-  name: 'name',
-  description: 'description'
-};
-
-exports.Prisma.StudentOrderByRelevanceFieldEnum = {
-  name: 'name',
-  email: 'email',
-  studentId: 'studentId'
-};
-
-exports.Prisma.EvaluationOrderByRelevanceFieldEnum = {
-  title: 'title',
-  description: 'description'
-};
-
-exports.Prisma.EvaluationCriteriaOrderByRelevanceFieldEnum = {
-  criterionName: 'criterionName'
 };
 
 
