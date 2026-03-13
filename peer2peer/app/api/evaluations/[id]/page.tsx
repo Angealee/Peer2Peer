@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const evaluationId = parseInt(params.id);
 
     const evaluation = await prisma.evaluation.findFirst({
-      where: { id: evaluationId, createdBy: user.userId },
+      where: { id: evaluationId, createdBy: user.id },
       include: {
         criteria: true,
         section: {
