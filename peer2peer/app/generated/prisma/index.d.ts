@@ -7293,6 +7293,7 @@ export namespace Prisma {
     evaluatedStudentId: number | null
     criterionId: number | null
     score: number | null
+    comment: string | null
   }
 
   export type EvaluationResponseMaxAggregateOutputType = {
@@ -7302,6 +7303,7 @@ export namespace Prisma {
     evaluatedStudentId: number | null
     criterionId: number | null
     score: number | null
+    comment: string | null
   }
 
   export type EvaluationResponseCountAggregateOutputType = {
@@ -7311,6 +7313,7 @@ export namespace Prisma {
     evaluatedStudentId: number
     criterionId: number
     score: number
+    comment: number
     _all: number
   }
 
@@ -7340,6 +7343,7 @@ export namespace Prisma {
     evaluatedStudentId?: true
     criterionId?: true
     score?: true
+    comment?: true
   }
 
   export type EvaluationResponseMaxAggregateInputType = {
@@ -7349,6 +7353,7 @@ export namespace Prisma {
     evaluatedStudentId?: true
     criterionId?: true
     score?: true
+    comment?: true
   }
 
   export type EvaluationResponseCountAggregateInputType = {
@@ -7358,6 +7363,7 @@ export namespace Prisma {
     evaluatedStudentId?: true
     criterionId?: true
     score?: true
+    comment?: true
     _all?: true
   }
 
@@ -7454,6 +7460,7 @@ export namespace Prisma {
     evaluatedStudentId: number
     criterionId: number
     score: number
+    comment: string | null
     _count: EvaluationResponseCountAggregateOutputType | null
     _avg: EvaluationResponseAvgAggregateOutputType | null
     _sum: EvaluationResponseSumAggregateOutputType | null
@@ -7482,6 +7489,7 @@ export namespace Prisma {
     evaluatedStudentId?: boolean
     criterionId?: boolean
     score?: boolean
+    comment?: boolean
     evaluation?: boolean | EvaluationDefaultArgs<ExtArgs>
     evaluatorStudent?: boolean | StudentDefaultArgs<ExtArgs>
     evaluatedStudent?: boolean | StudentDefaultArgs<ExtArgs>
@@ -7495,6 +7503,7 @@ export namespace Prisma {
     evaluatedStudentId?: boolean
     criterionId?: boolean
     score?: boolean
+    comment?: boolean
     evaluation?: boolean | EvaluationDefaultArgs<ExtArgs>
     evaluatorStudent?: boolean | StudentDefaultArgs<ExtArgs>
     evaluatedStudent?: boolean | StudentDefaultArgs<ExtArgs>
@@ -7508,6 +7517,7 @@ export namespace Prisma {
     evaluatedStudentId?: boolean
     criterionId?: boolean
     score?: boolean
+    comment?: boolean
     evaluation?: boolean | EvaluationDefaultArgs<ExtArgs>
     evaluatorStudent?: boolean | StudentDefaultArgs<ExtArgs>
     evaluatedStudent?: boolean | StudentDefaultArgs<ExtArgs>
@@ -7521,9 +7531,10 @@ export namespace Prisma {
     evaluatedStudentId?: boolean
     criterionId?: boolean
     score?: boolean
+    comment?: boolean
   }
 
-  export type EvaluationResponseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "evaluationId" | "evaluatorStudentId" | "evaluatedStudentId" | "criterionId" | "score", ExtArgs["result"]["evaluationResponse"]>
+  export type EvaluationResponseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "evaluationId" | "evaluatorStudentId" | "evaluatedStudentId" | "criterionId" | "score" | "comment", ExtArgs["result"]["evaluationResponse"]>
   export type EvaluationResponseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     evaluation?: boolean | EvaluationDefaultArgs<ExtArgs>
     evaluatorStudent?: boolean | StudentDefaultArgs<ExtArgs>
@@ -7558,6 +7569,7 @@ export namespace Prisma {
       evaluatedStudentId: number
       criterionId: number
       score: number
+      comment: string | null
     }, ExtArgs["result"]["evaluationResponse"]>
     composites: {}
   }
@@ -7991,6 +8003,7 @@ export namespace Prisma {
     readonly evaluatedStudentId: FieldRef<"EvaluationResponse", 'Int'>
     readonly criterionId: FieldRef<"EvaluationResponse", 'Int'>
     readonly score: FieldRef<"EvaluationResponse", 'Int'>
+    readonly comment: FieldRef<"EvaluationResponse", 'String'>
   }
     
 
@@ -8481,7 +8494,8 @@ export namespace Prisma {
     evaluatorStudentId: 'evaluatorStudentId',
     evaluatedStudentId: 'evaluatedStudentId',
     criterionId: 'criterionId',
-    score: 'score'
+    score: 'score',
+    comment: 'comment'
   };
 
   export type EvaluationResponseScalarFieldEnum = (typeof EvaluationResponseScalarFieldEnum)[keyof typeof EvaluationResponseScalarFieldEnum]
@@ -8909,6 +8923,7 @@ export namespace Prisma {
     evaluatedStudentId?: IntFilter<"EvaluationResponse"> | number
     criterionId?: IntFilter<"EvaluationResponse"> | number
     score?: IntFilter<"EvaluationResponse"> | number
+    comment?: StringNullableFilter<"EvaluationResponse"> | string | null
     evaluation?: XOR<EvaluationScalarRelationFilter, EvaluationWhereInput>
     evaluatorStudent?: XOR<StudentScalarRelationFilter, StudentWhereInput>
     evaluatedStudent?: XOR<StudentScalarRelationFilter, StudentWhereInput>
@@ -8922,6 +8937,7 @@ export namespace Prisma {
     evaluatedStudentId?: SortOrder
     criterionId?: SortOrder
     score?: SortOrder
+    comment?: SortOrderInput | SortOrder
     evaluation?: EvaluationOrderByWithRelationInput
     evaluatorStudent?: StudentOrderByWithRelationInput
     evaluatedStudent?: StudentOrderByWithRelationInput
@@ -8938,6 +8954,7 @@ export namespace Prisma {
     evaluatedStudentId?: IntFilter<"EvaluationResponse"> | number
     criterionId?: IntFilter<"EvaluationResponse"> | number
     score?: IntFilter<"EvaluationResponse"> | number
+    comment?: StringNullableFilter<"EvaluationResponse"> | string | null
     evaluation?: XOR<EvaluationScalarRelationFilter, EvaluationWhereInput>
     evaluatorStudent?: XOR<StudentScalarRelationFilter, StudentWhereInput>
     evaluatedStudent?: XOR<StudentScalarRelationFilter, StudentWhereInput>
@@ -8951,6 +8968,7 @@ export namespace Prisma {
     evaluatedStudentId?: SortOrder
     criterionId?: SortOrder
     score?: SortOrder
+    comment?: SortOrderInput | SortOrder
     _count?: EvaluationResponseCountOrderByAggregateInput
     _avg?: EvaluationResponseAvgOrderByAggregateInput
     _max?: EvaluationResponseMaxOrderByAggregateInput
@@ -8968,6 +8986,7 @@ export namespace Prisma {
     evaluatedStudentId?: IntWithAggregatesFilter<"EvaluationResponse"> | number
     criterionId?: IntWithAggregatesFilter<"EvaluationResponse"> | number
     score?: IntWithAggregatesFilter<"EvaluationResponse"> | number
+    comment?: StringNullableWithAggregatesFilter<"EvaluationResponse"> | string | null
   }
 
   export type UserCreateInput = {
@@ -9275,6 +9294,7 @@ export namespace Prisma {
 
   export type EvaluationResponseCreateInput = {
     score: number
+    comment?: string | null
     evaluation: EvaluationCreateNestedOneWithoutResponsesInput
     evaluatorStudent: StudentCreateNestedOneWithoutEvaluationsGivenInput
     evaluatedStudent: StudentCreateNestedOneWithoutEvaluationsReceivedInput
@@ -9288,10 +9308,12 @@ export namespace Prisma {
     evaluatedStudentId: number
     criterionId: number
     score: number
+    comment?: string | null
   }
 
   export type EvaluationResponseUpdateInput = {
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
     evaluation?: EvaluationUpdateOneRequiredWithoutResponsesNestedInput
     evaluatorStudent?: StudentUpdateOneRequiredWithoutEvaluationsGivenNestedInput
     evaluatedStudent?: StudentUpdateOneRequiredWithoutEvaluationsReceivedNestedInput
@@ -9305,6 +9327,7 @@ export namespace Prisma {
     evaluatedStudentId?: IntFieldUpdateOperationsInput | number
     criterionId?: IntFieldUpdateOperationsInput | number
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EvaluationResponseCreateManyInput = {
@@ -9314,10 +9337,12 @@ export namespace Prisma {
     evaluatedStudentId: number
     criterionId: number
     score: number
+    comment?: string | null
   }
 
   export type EvaluationResponseUpdateManyMutationInput = {
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EvaluationResponseUncheckedUpdateManyInput = {
@@ -9327,6 +9352,7 @@ export namespace Prisma {
     evaluatedStudentId?: IntFieldUpdateOperationsInput | number
     criterionId?: IntFieldUpdateOperationsInput | number
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -9745,6 +9771,7 @@ export namespace Prisma {
     evaluatedStudentId?: SortOrder
     criterionId?: SortOrder
     score?: SortOrder
+    comment?: SortOrder
   }
 
   export type EvaluationResponseAvgOrderByAggregateInput = {
@@ -9763,6 +9790,7 @@ export namespace Prisma {
     evaluatedStudentId?: SortOrder
     criterionId?: SortOrder
     score?: SortOrder
+    comment?: SortOrder
   }
 
   export type EvaluationResponseMinOrderByAggregateInput = {
@@ -9772,6 +9800,7 @@ export namespace Prisma {
     evaluatedStudentId?: SortOrder
     criterionId?: SortOrder
     score?: SortOrder
+    comment?: SortOrder
   }
 
   export type EvaluationResponseSumOrderByAggregateInput = {
@@ -10783,6 +10812,7 @@ export namespace Prisma {
 
   export type EvaluationResponseCreateWithoutEvaluatorStudentInput = {
     score: number
+    comment?: string | null
     evaluation: EvaluationCreateNestedOneWithoutResponsesInput
     evaluatedStudent: StudentCreateNestedOneWithoutEvaluationsReceivedInput
     criterion: EvaluationCriteriaCreateNestedOneWithoutResponsesInput
@@ -10794,6 +10824,7 @@ export namespace Prisma {
     evaluatedStudentId: number
     criterionId: number
     score: number
+    comment?: string | null
   }
 
   export type EvaluationResponseCreateOrConnectWithoutEvaluatorStudentInput = {
@@ -10808,6 +10839,7 @@ export namespace Prisma {
 
   export type EvaluationResponseCreateWithoutEvaluatedStudentInput = {
     score: number
+    comment?: string | null
     evaluation: EvaluationCreateNestedOneWithoutResponsesInput
     evaluatorStudent: StudentCreateNestedOneWithoutEvaluationsGivenInput
     criterion: EvaluationCriteriaCreateNestedOneWithoutResponsesInput
@@ -10819,6 +10851,7 @@ export namespace Prisma {
     evaluatorStudentId: number
     criterionId: number
     score: number
+    comment?: string | null
   }
 
   export type EvaluationResponseCreateOrConnectWithoutEvaluatedStudentInput = {
@@ -10885,6 +10918,7 @@ export namespace Prisma {
     evaluatedStudentId?: IntFilter<"EvaluationResponse"> | number
     criterionId?: IntFilter<"EvaluationResponse"> | number
     score?: IntFilter<"EvaluationResponse"> | number
+    comment?: StringNullableFilter<"EvaluationResponse"> | string | null
   }
 
   export type EvaluationResponseUpsertWithWhereUniqueWithoutEvaluatedStudentInput = {
@@ -10970,6 +11004,7 @@ export namespace Prisma {
 
   export type EvaluationResponseCreateWithoutEvaluationInput = {
     score: number
+    comment?: string | null
     evaluatorStudent: StudentCreateNestedOneWithoutEvaluationsGivenInput
     evaluatedStudent: StudentCreateNestedOneWithoutEvaluationsReceivedInput
     criterion: EvaluationCriteriaCreateNestedOneWithoutResponsesInput
@@ -10981,6 +11016,7 @@ export namespace Prisma {
     evaluatedStudentId: number
     criterionId: number
     score: number
+    comment?: string | null
   }
 
   export type EvaluationResponseCreateOrConnectWithoutEvaluationInput = {
@@ -11120,6 +11156,7 @@ export namespace Prisma {
 
   export type EvaluationResponseCreateWithoutCriterionInput = {
     score: number
+    comment?: string | null
     evaluation: EvaluationCreateNestedOneWithoutResponsesInput
     evaluatorStudent: StudentCreateNestedOneWithoutEvaluationsGivenInput
     evaluatedStudent: StudentCreateNestedOneWithoutEvaluationsReceivedInput
@@ -11131,6 +11168,7 @@ export namespace Prisma {
     evaluatorStudentId: number
     evaluatedStudentId: number
     score: number
+    comment?: string | null
   }
 
   export type EvaluationResponseCreateOrConnectWithoutCriterionInput = {
@@ -11547,6 +11585,7 @@ export namespace Prisma {
     evaluatedStudentId: number
     criterionId: number
     score: number
+    comment?: string | null
   }
 
   export type EvaluationResponseCreateManyEvaluatedStudentInput = {
@@ -11555,10 +11594,12 @@ export namespace Prisma {
     evaluatorStudentId: number
     criterionId: number
     score: number
+    comment?: string | null
   }
 
   export type EvaluationResponseUpdateWithoutEvaluatorStudentInput = {
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
     evaluation?: EvaluationUpdateOneRequiredWithoutResponsesNestedInput
     evaluatedStudent?: StudentUpdateOneRequiredWithoutEvaluationsReceivedNestedInput
     criterion?: EvaluationCriteriaUpdateOneRequiredWithoutResponsesNestedInput
@@ -11570,6 +11611,7 @@ export namespace Prisma {
     evaluatedStudentId?: IntFieldUpdateOperationsInput | number
     criterionId?: IntFieldUpdateOperationsInput | number
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EvaluationResponseUncheckedUpdateManyWithoutEvaluatorStudentInput = {
@@ -11578,10 +11620,12 @@ export namespace Prisma {
     evaluatedStudentId?: IntFieldUpdateOperationsInput | number
     criterionId?: IntFieldUpdateOperationsInput | number
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EvaluationResponseUpdateWithoutEvaluatedStudentInput = {
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
     evaluation?: EvaluationUpdateOneRequiredWithoutResponsesNestedInput
     evaluatorStudent?: StudentUpdateOneRequiredWithoutEvaluationsGivenNestedInput
     criterion?: EvaluationCriteriaUpdateOneRequiredWithoutResponsesNestedInput
@@ -11593,6 +11637,7 @@ export namespace Prisma {
     evaluatorStudentId?: IntFieldUpdateOperationsInput | number
     criterionId?: IntFieldUpdateOperationsInput | number
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EvaluationResponseUncheckedUpdateManyWithoutEvaluatedStudentInput = {
@@ -11601,6 +11646,7 @@ export namespace Prisma {
     evaluatorStudentId?: IntFieldUpdateOperationsInput | number
     criterionId?: IntFieldUpdateOperationsInput | number
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EvaluationCriteriaCreateManyEvaluationInput = {
@@ -11614,6 +11660,7 @@ export namespace Prisma {
     evaluatedStudentId: number
     criterionId: number
     score: number
+    comment?: string | null
   }
 
   export type EvaluationCriteriaUpdateWithoutEvaluationInput = {
@@ -11634,6 +11681,7 @@ export namespace Prisma {
 
   export type EvaluationResponseUpdateWithoutEvaluationInput = {
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
     evaluatorStudent?: StudentUpdateOneRequiredWithoutEvaluationsGivenNestedInput
     evaluatedStudent?: StudentUpdateOneRequiredWithoutEvaluationsReceivedNestedInput
     criterion?: EvaluationCriteriaUpdateOneRequiredWithoutResponsesNestedInput
@@ -11645,6 +11693,7 @@ export namespace Prisma {
     evaluatedStudentId?: IntFieldUpdateOperationsInput | number
     criterionId?: IntFieldUpdateOperationsInput | number
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EvaluationResponseUncheckedUpdateManyWithoutEvaluationInput = {
@@ -11653,6 +11702,7 @@ export namespace Prisma {
     evaluatedStudentId?: IntFieldUpdateOperationsInput | number
     criterionId?: IntFieldUpdateOperationsInput | number
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EvaluationResponseCreateManyCriterionInput = {
@@ -11661,10 +11711,12 @@ export namespace Prisma {
     evaluatorStudentId: number
     evaluatedStudentId: number
     score: number
+    comment?: string | null
   }
 
   export type EvaluationResponseUpdateWithoutCriterionInput = {
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
     evaluation?: EvaluationUpdateOneRequiredWithoutResponsesNestedInput
     evaluatorStudent?: StudentUpdateOneRequiredWithoutEvaluationsGivenNestedInput
     evaluatedStudent?: StudentUpdateOneRequiredWithoutEvaluationsReceivedNestedInput
@@ -11676,6 +11728,7 @@ export namespace Prisma {
     evaluatorStudentId?: IntFieldUpdateOperationsInput | number
     evaluatedStudentId?: IntFieldUpdateOperationsInput | number
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EvaluationResponseUncheckedUpdateManyWithoutCriterionInput = {
@@ -11684,6 +11737,7 @@ export namespace Prisma {
     evaluatorStudentId?: IntFieldUpdateOperationsInput | number
     evaluatedStudentId?: IntFieldUpdateOperationsInput | number
     score?: IntFieldUpdateOperationsInput | number
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 

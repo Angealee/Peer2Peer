@@ -134,14 +134,16 @@ export interface Student {
   sectionId: number;
 }
 
-export interface Evaluation {
+export type Evaluation = {
   id: number;
   title: string;
   description?: string;
   sectionId: number;
-  createdAt: string;
-  criteria: { id: number; criterionName: string }[];
-}
+  deadline?: string | null;
+  anonymous?: boolean;
+  createdAt?: string;
+  criteria?: { id: number; criterionName: string }[];
+};
 
 export interface EvaluationResults {
   evaluationId: number;
@@ -150,5 +152,6 @@ export interface EvaluationResults {
     student: { id: number; name: string; email: string };
     scores: { criterion: string; average: number; count: number }[];
     overallAverage: number;
+    comments: { evaluatorName: string; text: string }[];
   }[];
 }

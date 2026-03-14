@@ -167,7 +167,8 @@ exports.Prisma.EvaluationResponseScalarFieldEnum = {
   evaluatorStudentId: 'evaluatorStudentId',
   evaluatedStudentId: 'evaluatedStudentId',
   criterionId: 'criterionId',
-  score: 'score'
+  score: 'score',
+  comment: 'comment'
 };
 
 exports.Prisma.SortOrder = {
