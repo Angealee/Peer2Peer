@@ -88,14 +88,17 @@ export default function GenerateLinksPage() {
   }, [selectedEval, students]);
 
   function generateLinks() {
-    if (selectedEval === "" || students.length === 0) return;
-    const base = window.location.origin;
-    const links = students.map((s) => ({
-      student: s,
-      link: `${base}/evaluate/${btoa(`${s.id}:${selectedEval}`)}`,
-    }));
-    setStudentLinks(links);
-  }
+  if (selectedEval === "" || students.length === 0) return;
+  const base = window.location.origin;
+  const links = students.map((s) => ({
+    student: s,
+    link: `${base}/evaluate/${btoa(encodeURIComponent(JSON.stringify({ studentId: s.id, evaluationId: selectedEval })))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "")}`,
+  }));
+  setStudentLinks(links);
+}
 
   function copyAll() {
     const text = studentLinks
