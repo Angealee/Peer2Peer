@@ -1,0 +1,501 @@
+/* ═══════════════════════════════════════════════════
+   token.module.css — Peer Evaluation Page
+   Light theme: clean white card on grey background
+   ═══════════════════════════════════════════════════ */
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Page ── */
+.page {
+  min-height: 100vh;
+  background: #101e2d;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px 80px;
+  font-family: 'Geist', 'Inter', sans-serif;
+}
+
+/* ── Card ── */
+.card {
+  width: 100%;
+  max-width: 640px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 28px;
+  box-shadow: 0 4px 32px rgba(116, 112, 112, 0.775);
+}
+
+/* ── State card (loading / error / done) ── */
+.stateCard {
+  width: 100%;
+  max-width: 640px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 48px 28px;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.07);
+  text-align: center;
+}
+
+/* ── Spinner ── */
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e2e8f0;
+  border-top: 3px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+.spinnerText {
+  color: #6b7280;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+/* ── State content ── */
+.stateIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.stateTitle {
+  color: #111827;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.stateTitleSuccess {
+  color: #111827;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.stateMsg {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Header section ── */
+.header {
+  margin-bottom: 28px;
+}
+
+.evalHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.evalBadge {
+  display: inline-block;
+  background: #eaeaeb;
+  color: #2563eb;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 99px;
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.evalTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.evalDesc {
+  color: #000000;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Pills row ── */
+.pillRow {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 15px;
+  font-weight: 500;
+  background: #f1f5f9;
+  color: #374151;
+}
+
+.pillDeadline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 500;
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.pillAnon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 500;
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+/* ── Progress box ── */
+.progressBox {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+}
+
+.progressTop {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #171717;
+}
+
+.progressCount {
+  font-weight: 600;
+  color: #1f4ba8;
+}
+
+.progressTrack {
+  height: 8px;
+  background: #0d0d0e;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #e6902d;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.progressFillDone {
+  height: 100%;
+  background: #22c55e;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* ── Instruction ── */
+.instruction {
+  font-size: 15px;
+  color: #1f4ba8;
+  margin-bottom: 16px;
+}
+
+/* ── Peer card ── */
+.peerCard {
+  border: 2px solid #dcdcdc;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.peerCardActive {
+  border: 2px solid #2563eb;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.10);
+}
+
+/* ── Peer header button ── */
+.peerHeader {
+  width: 100%;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* ── Peer avatar ── */
+.peerAvatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 700;
+  color: #64748b;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.peerAvatarDone {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #dcfce7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 700;
+  color: #16a34a;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+/* ── Peer info ── */
+.peerInfo {
+  flex: 1;
+}
+
+.peerName {
+  font-weight: 700;
+  font-size: 16px;
+  color: #111827;
+  letter-spacing: -0.01em;
+}
+
+.peerMeta {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.peerCommentTag {
+  margin-left: 8px;
+  color: #2563eb;
+}
+
+/* ── Peer mini progress ── */
+.peerProgressBar {
+  width: 80px;
+}
+
+.peerProgressTrack {
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.peerProgressFill {
+  height: 100%;
+  background: #2563eb;
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+
+.peerProgressFillDone {
+  height: 100%;
+  background: #22c55e;
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+
+.chevron {
+  color: #0464ec;
+  font-size: 18px;
+  margin-left: 4px;
+}
+
+/* ── Peer body (expanded) ── */
+.peerBody {
+  padding: 4px 20px 20px;
+}
+
+.divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin-bottom: 16px;
+}
+
+/* ── Criterion row ── */
+.criterionRow {
+  margin-bottom: 18px;
+}
+
+.criterionName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 10px;
+}
+
+.scoreRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.scoreLabel {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ── Score button ── */
+.scoreBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #e2e8f0;
+  background: #fff;
+  color: #374151;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.scoreBtnSelected {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #2563eb;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Comment box ── */
+.commentBox {
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.commentLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.commentOptional {
+  font-weight: 400;
+  color: #9ca3af;
+  margin-left: 6px;
+}
+
+.commentTextarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
+  font-size: 13px;
+  color: #374151;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  background: white;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+  line-height: 1.6;
+}
+
+.commentTextarea::placeholder {
+  color: #9ca3af;
+}
+
+.commentTextarea:focus {
+  border-color: #2563eb;
+}
+
+/* ── Error banner ── */
+.errorBanner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+/* ── Submit button ── */
+.submitBtn {
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px 0;
+  border-radius: 12px;
+  border: none;
+  background: #e2e8f0;
+  color: #9ca3af;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: not-allowed;
+  transition: all 0.2s ease;
+}
+
+.submitBtnReady {
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px 0;
+  border-radius: 12px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submitBtnReady:hover {
+  background: #1d4ed8;
+}
+
+.submitBtnReady:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

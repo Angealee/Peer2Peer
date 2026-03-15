@@ -11,7 +11,7 @@ export default function CreateEvaluationPage() {
   // ── Form state ────────────────────────────────────
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedSectionId, setSelectedSectionId] = useState("");
+  const [selectedSectionIds, setSelectedSectionIds] = useState<number[]>([]);
   const [deadline, setDeadline] = useState("");
   const [anonymous, setAnonymous] = useState(true);
   const [criteria, setCriteria] = useState<string[]>(["", "", ""]);
@@ -40,6 +40,24 @@ export default function CreateEvaluationPage() {
       .finally(() => setEvalsLoading(false));
   }, []);
 
+  // ── Section checkbox toggle ───────────────────────
+  const toggleSection = (id: number) => {
+    if (editingId) return; // can't change section while editing
+    setSelectedSectionIds((prev) =>
+      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+    );
+  };
+
+  const selectAllSections = () => {
+    if (editingId) return;
+    setSelectedSectionIds(sections.map((s) => s.id));
+  };
+
+  const clearAllSections = () => {
+    if (editingId) return;
+    setSelectedSectionIds([]);
+  };
+
   // ── Criteria helpers ──────────────────────────────
   const addCriteria = () => setCriteria((p) => [...p, ""]);
   const removeCriteria = (i: number) => setCriteria((p) => p.filter((_, idx) => idx !== i));
@@ -48,17 +66,17 @@ export default function CreateEvaluationPage() {
 
   // ── Reset form ────────────────────────────────────
   const resetForm = () => {
-    setTitle(""); setDescription(""); setSelectedSectionId("");
+    setTitle(""); setDescription(""); setSelectedSectionIds([]);
     setDeadline(""); setAnonymous(true); setCriteria(["", "", ""]);
     setEditingId(null); setError(""); setSuccess("");
   };
 
-  // ── Load eval into form ───────────────────────────
+  // ── Load eval into form for editing ──────────────
   const handleEdit = (ev: Evaluation) => {
     setEditingId(ev.id);
     setTitle(ev.title);
     setDescription(ev.description ?? "");
-    setSelectedSectionId(String(ev.sectionId));
+    setSelectedSectionIds([ev.sectionId]); // single section in edit mode
     setDeadline(ev.deadline ? String(ev.deadline).slice(0, 16) : "");
     setAnonymous(ev.anonymous ?? true);
     setCriteria(
@@ -76,12 +94,13 @@ export default function CreateEvaluationPage() {
     setError(""); setSuccess("");
     const clean = criteria.map((c) => c.trim()).filter(Boolean);
     if (!title.trim()) { setError("Title is required."); return; }
-    if (!selectedSectionId) { setError("Please select a section."); return; }
+    if (selectedSectionIds.length === 0) { setError("Please select at least one section."); return; }
     if (clean.length === 0) { setError("Add at least one criterion."); return; }
 
     setLoading(true);
     try {
       if (editingId) {
+        // Update single evaluation
         await fetch(`/api/evaluations/${editingId}`, {
           method: "PATCH",
           headers: {
@@ -100,16 +119,29 @@ export default function CreateEvaluationPage() {
           )
         );
         setSuccess("✅ Evaluation updated!");
+        resetForm();
       } else {
-        const created = await api.evaluations.create({
-          title: title.trim(), description: description.trim(),
-          sectionId: Number(selectedSectionId),
-          deadline: deadline || undefined, anonymous, criteria: clean,
-        });
-        setEvaluations((prev) => [created, ...prev]);
-        setSuccess("✅ Evaluation created!");
+        // Create one evaluation per selected section
+        const created = await Promise.all(
+          selectedSectionIds.map((sectionId) =>
+            api.evaluations.create({
+              title: title.trim(),
+              description: description.trim(),
+              sectionId,
+              deadline: deadline || undefined,
+              anonymous,
+              criteria: clean,
+            })
+          )
+        );
+        setEvaluations((prev) => [...created, ...prev]);
+        setSuccess(
+          selectedSectionIds.length === 1
+            ? `✅ Evaluation created for ${sections.find((s) => s.id === selectedSectionIds[0])?.name}!`
+            : `✅ ${selectedSectionIds.length} evaluations created across ${selectedSectionIds.length} sections!`
+        );
+        resetForm();
       }
-      resetForm();
     } catch (err: any) {
       setError(err.message ?? "Failed to save.");
     } finally {
@@ -135,7 +167,6 @@ export default function CreateEvaluationPage() {
     }
   };
 
-  const selectedSection = sections.find((s) => s.id === Number(selectedSectionId));
   const getSectionName = (id: number) => sections.find((s) => s.id === id)?.name ?? `Section #${id}`;
 
   return (
@@ -154,7 +185,7 @@ export default function CreateEvaluationPage() {
             <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>⚠️</div>
             <h3 style={{ fontWeight: 700, color: "#0f172a", marginBottom: "0.5rem" }}>Delete Evaluation?</h3>
             <p style={{ color: "#64748b", fontSize: "0.9rem", marginBottom: "1.5rem" }}>
-              This will permanently delete the evaluation and all its responses. This cannot be undone.
+              This will permanently delete the evaluation and all its responses. Cannot be undone.
             </p>
             <div style={{ display: "flex", gap: "0.75rem", justifyContent: "flex-end" }}>
               <button onClick={() => setConfirmId(null)} style={{
@@ -172,106 +203,13 @@ export default function CreateEvaluationPage() {
         </div>
       )}
 
-      <h1 className={styles.title}>
-        {editingId ? "✏️ Edit Evaluation" : "Create New Evaluation"}
-      </h1>
-
-      {/* ── Form ── */}
-      <form onSubmit={handleSubmit} className={styles.form}>
-
-        {editingId && (
-          <div style={{
-            background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "8px",
-            padding: "10px 14px", fontSize: "0.85rem", color: "#92400e", marginBottom: "1rem",
-            display: "flex", justifyContent: "space-between", alignItems: "center",
-          }}>
-            <span>✏️ Editing — section cannot be changed while editing</span>
-            <button type="button" onClick={resetForm} style={{
-              background: "none", border: "none", cursor: "pointer",
-              color: "#92400e", fontWeight: 700,
-            }}>✕ Cancel</button>
-          </div>
-        )}
-
-        <div className={styles.formGroup}>
-          <label>Evaluation Title</label>
-          <input type="text" placeholder="e.g. Midterm Peer Evaluation"
-            value={title} onChange={(e) => setTitle(e.target.value)} disabled={loading} required />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label>Description <span style={{ fontWeight: 400, fontSize: "0.8rem", color: "#94a3b8", textTransform: "none" }}>(optional)</span></label>
-          <input type="text" placeholder="Brief description"
-            value={description} onChange={(e) => setDescription(e.target.value)} disabled={loading} />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label>Select Section</label>
-          <select value={selectedSectionId} onChange={(e) => setSelectedSectionId(e.target.value)}
-            disabled={loading || sectionsLoading || !!editingId} required>
-            <option value="">{sectionsLoading ? "Loading..." : "— Select a Section —"}</option>
-            {sections.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name} ({s._count?.students ?? 0} students)
-              </option>
-            ))}
-          </select>
-          {selectedSection && !editingId && (
-            <span style={{
-              marginTop: "8px", display: "inline-flex", alignItems: "center", gap: "6px",
-              background: "rgba(29,207,216,0.1)", border: "1px solid rgba(29,207,216,0.3)",
-              borderRadius: "99px", padding: "3px 12px", fontSize: "0.8rem",
-              color: "rgb(20,184,166)", fontWeight: 600, width: "fit-content",
-            }}>
-              👥 {selectedSection._count?.students ?? 0} students will be evaluated
-            </span>
-          )}
-        </div>
-
-        <div className={styles.formGroup}>
-          <label>Deadline <span style={{ fontWeight: 400, fontSize: "0.8rem", color: "#94a3b8", textTransform: "none" }}>(optional)</span></label>
-          <input type="datetime-local" value={deadline}
-            onChange={(e) => setDeadline(e.target.value)} disabled={loading} />
-        </div>
-
-        <div className={styles.checkboxGroup}>
-          <input type="checkbox" id="anonymous" checked={anonymous}
-            onChange={() => setAnonymous((p) => !p)} disabled={loading} />
-          <label htmlFor="anonymous">Anonymous Evaluation</label>
-        </div>
-
-        <div className={styles.criteriaSection}>
-          <label>Evaluation Criteria</label>
-          {criteria.map((item, index) => (
-            <div key={index} className={styles.criteriaRow}>
-              <input type="text" placeholder={`Criterion ${index + 1} (e.g. Teamwork)`}
-                value={item} onChange={(e) => changeCriteria(index, e.target.value)} disabled={loading} />
-              {criteria.length > 1 && (
-                <button type="button" onClick={() => removeCriteria(index)}
-                  className={styles.removeBtn} disabled={loading}>Remove</button>
-              )}
-            </div>
-          ))}
-          <button type="button" onClick={addCriteria} className={styles.addBtn} disabled={loading}>
-            + Add Criterion
-          </button>
-        </div>
-
-        {error && <p className={styles.errorText}>{error}</p>}
-        {success && <p className={styles.successText}>{success}</p>}
-
-        <button type="submit" className={styles.submitBtn} disabled={loading}>
-          {loading ? "Saving..." : editingId ? "Save Changes" : "Create Evaluation"}
-        </button>
-      </form>
-
       {/* ── Existing Evaluations ── */}
       <div>
         <h2 style={{
-          fontSize: "1.1rem", fontWeight: 700, color: "#0f172a",
+          fontSize: "1.1rem", fontWeight: 700, color: "#fdfdfd",
           marginBottom: "1rem", display: "flex", alignItems: "center", gap: "8px",
         }}>
-          Existing Evaluations
+          Evaluation/s
           <span style={{ fontSize: "0.8rem", fontWeight: 400, color: "#94a3b8" }}>
             ({evaluations.length})
           </span>
@@ -328,6 +266,206 @@ export default function CreateEvaluationPage() {
           </div>
         )}
       </div>
+
+      <h1 className={styles.title}>
+        {editingId ? "✏️ Edit Evaluation" : "Create New Evaluation"}
+      </h1>
+
+      {/* ── Form ── */}
+      <form onSubmit={handleSubmit} className={styles.form}>
+
+        {editingId && (
+          <div style={{
+            background: "#fffbeb", border: "1px solid #fde68a", borderRadius: "8px",
+            padding: "10px 14px", fontSize: "0.85rem", color: "#92400e", marginBottom: "1rem",
+            display: "flex", justifyContent: "space-between", alignItems: "center",
+          }}>
+            <span>✏️ Editing — section cannot be changed while editing</span>
+            <button type="button" onClick={resetForm} style={{
+              background: "none", border: "none", cursor: "pointer",
+              color: "#92400e", fontWeight: 700,
+            }}>✕ Cancel</button>
+          </div>
+        )}
+
+        <div className={styles.formGroup}>
+          <label>Evaluation Title</label>
+          <input type="text" placeholder="e.g. Midterm Peer Evaluation"
+            value={title} onChange={(e) => setTitle(e.target.value)} disabled={loading} required />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label>
+            Description
+            <span style={{ fontWeight: 400, fontSize: "0.8rem", color: "#94a3b8", textTransform: "none", marginLeft: "6px" }}>
+              (optional)
+            </span>
+          </label>
+          <input type="text" placeholder="Brief description"
+            value={description} onChange={(e) => setDescription(e.target.value)} disabled={loading} />
+        </div>
+
+        {/* ── Section Selector ── */}
+        <div className={styles.formGroup}>
+          <label>
+            Select Sections
+            {!editingId && selectedSectionIds.length > 0 && (
+              <span style={{
+                marginLeft: "8px", fontSize: "0.75rem", fontWeight: 600,
+                color: "rgb(20,184,166)", background: "rgba(20,184,166,0.1)",
+                padding: "2px 8px", borderRadius: "99px",
+              }}>
+                {selectedSectionIds.length} selected
+              </span>
+            )}
+          </label>
+
+          {sectionsLoading ? (
+            <p style={{ color: "#94a3b8", fontSize: "0.85rem" }}>Loading sections...</p>
+          ) : sections.length === 0 ? (
+            <p style={{ color: "#f87171", fontSize: "0.85rem" }}>
+              No sections found.{" "}
+              <span style={{ textDecoration: "underline", cursor: "pointer" }}
+                onClick={() => router.push("/dashboard/section")}>
+                Create one first →
+              </span>
+            </p>
+          ) : (
+            <>
+              {/* Select all / clear buttons */}
+              {!editingId && (
+                <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
+                  <button type="button" onClick={selectAllSections} style={{
+                    padding: "4px 12px", borderRadius: "6px", border: "1px solid #e2e8f0",
+                    background: "white", fontSize: "0.78rem", fontWeight: 600,
+                    color: "#475569", cursor: "pointer",
+                  }}>Select All</button>
+                  <button type="button" onClick={clearAllSections} style={{
+                    padding: "4px 12px", borderRadius: "6px", border: "1px solid #e2e8f0",
+                    background: "white", fontSize: "0.78rem", fontWeight: 600,
+                    color: "#475569", cursor: "pointer",
+                  }}>Clear</button>
+                </div>
+              )}
+
+              {/* Section checkboxes */}
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                gap: "10px",
+              }}>
+                {sections.map((s) => {
+                  const isChecked = selectedSectionIds.includes(s.id);
+                  const isDisabled = !!editingId && !isChecked;
+                  return (
+                    <div
+                      key={s.id}
+                      onClick={() => !isDisabled && toggleSection(s.id)}
+                      style={{
+                        display: "flex", alignItems: "center", gap: "10px",
+                        padding: "10px 14px", borderRadius: "10px",
+                        border: isChecked ? "2px solid rgb(20,184,166)" : "1.5px solid #e2e8f0",
+                        background: isChecked ? "rgba(20,184,166,0.06)" : "#f8fafc",
+                        cursor: isDisabled ? "default" : "pointer",
+                        opacity: isDisabled ? 0.5 : 1,
+                        transition: "all 0.15s ease",
+                        userSelect: "none",
+                      }}
+                    >
+                      {/* Custom checkbox */}
+                      <div style={{
+                        width: 18, height: 18, borderRadius: "5px", flexShrink: 0,
+                        border: isChecked ? "2px solid rgb(20,184,166)" : "2px solid #d1d5db",
+                        background: isChecked ? "rgb(20,184,166)" : "white",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        transition: "all 0.15s ease",
+                      }}>
+                        {isChecked && (
+                          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{
+                          fontWeight: 600, fontSize: "0.875rem",
+                          color: isChecked ? "rgb(15,23,42)" : "#374151",
+                          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                        }}>
+                          {s.name}
+                        </div>
+                        <div style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
+                          {s._count?.students ?? 0} student{s._count?.students !== 1 ? "s" : ""}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Summary of selected */}
+              {!editingId && selectedSectionIds.length > 0 && (
+                <div style={{
+                  marginTop: "10px", padding: "10px 14px",
+                  background: "rgba(20,184,166,0.08)",
+                  border: "1px solid rgba(20,184,166,0.3)",
+                  borderRadius: "8px", fontSize: "0.82rem", color: "rgb(15,118,110)",
+                }}>
+                  📋 Will create <strong>{selectedSectionIds.length}</strong> evaluation{selectedSectionIds.length > 1 ? "s" : ""} for:{" "}
+                  {selectedSectionIds.map((id) => getSectionName(id)).join(", ")}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className={styles.formGroup}>
+          <label>
+            Deadline
+            <span style={{ fontWeight: 400, fontSize: "0.8rem", color: "#94a3b8", textTransform: "none", marginLeft: "6px" }}>
+              (optional)
+            </span>
+          </label>
+          <input type="datetime-local" value={deadline}
+            onChange={(e) => setDeadline(e.target.value)} disabled={loading} />
+        </div>
+
+        <div className={styles.checkboxGroup}>
+          <input type="checkbox" id="anonymous" checked={anonymous}
+            onChange={() => setAnonymous((p) => !p)} disabled={loading} />
+          <label htmlFor="anonymous">Anonymous Evaluation</label>
+        </div>
+
+        <div className={styles.criteriaSection}>
+          <label>Evaluation Criteria</label>
+          {criteria.map((item, index) => (
+            <div key={index} className={styles.criteriaRow}>
+              <input type="text" placeholder={`Criterion ${index + 1} (e.g. Teamwork)`}
+                value={item} onChange={(e) => changeCriteria(index, e.target.value)} disabled={loading} />
+              {criteria.length > 1 && (
+                <button type="button" onClick={() => removeCriteria(index)}
+                  className={styles.removeBtn} disabled={loading}>Remove</button>
+              )}
+            </div>
+          ))}
+          <button type="button" onClick={addCriteria} className={styles.addBtn} disabled={loading}>
+            + Add Criterion
+          </button>
+        </div>
+
+        {error && <p className={styles.errorText}>{error}</p>}
+        {success && <p className={styles.successText}>{success}</p>}
+
+        <button type="submit" className={styles.submitBtn} disabled={loading}>
+          {loading
+            ? "Saving..."
+            : editingId
+            ? "Save Changes"
+            : selectedSectionIds.length > 1
+            ? `Create ${selectedSectionIds.length} Evaluations`
+            : "Create Evaluation"}
+        </button>
+      </form>
     </div>
   );
 }

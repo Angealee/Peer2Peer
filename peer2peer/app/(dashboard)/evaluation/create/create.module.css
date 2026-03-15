@@ -16,7 +16,7 @@
 .title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #fdfdfd;
   letter-spacing: -0.02em;
   margin-bottom: 0.25rem;
 }
@@ -248,4 +248,11 @@
   background: #f0fdf4;
   border-radius: 8px;
   border: 1px solid #86efac;
+}
+
+.backgroundCard-evaluations {
+  background: #a8b1be;
+  padding: 1.5rem 2rem;
+  border-radius: 14px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
 }

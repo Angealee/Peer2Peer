@@ -5,7 +5,7 @@ export default function EvaluationDonePage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#f8fafc",
+        background: "#101e2d",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

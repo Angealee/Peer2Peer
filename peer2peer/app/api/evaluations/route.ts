@@ -1,7 +1,4 @@
 // app/api/evaluations/route.ts
-// GET /api/evaluations  — list all evaluations for the instructor
-// POST /api/evaluations — create a new evaluation with criteria
-
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
@@ -31,13 +28,13 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const user = requireAdmin(req);
-    const { title, description, sectionId, criteria } = await req.json();
+
+    const { title, description, sectionId, criteria, deadline, anonymous } = await req.json();
 
     if (!title || !sectionId) {
       return NextResponse.json({ error: "title and sectionId are required" }, { status: 400 });
     }
 
-    // Verify section ownership
     const section = await prisma.section.findFirst({
       where: { id: Number(sectionId), createdBy: user.id },
     });
@@ -51,6 +48,8 @@ export async function POST(req: NextRequest) {
         description,
         sectionId: Number(sectionId),
         createdBy: user.id,
+        deadline: deadline ? new Date(deadline) : null,
+        anonymous: typeof anonymous === "boolean" ? anonymous : true,
         criteria: {
           create: (criteria as string[]).map((name) => ({ criterionName: name })),
         },

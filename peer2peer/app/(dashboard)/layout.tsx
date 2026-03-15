@@ -35,7 +35,7 @@ export default function DashboardLayout({
         </div>
 
         <div onClick={() => router.push("/links")} className={styles.navItem}>
-          Create Token/Links
+          Token/Links
         </div>
 
         <div onClick={() => router.push("/evaluation/results")} className={styles.navItem}>

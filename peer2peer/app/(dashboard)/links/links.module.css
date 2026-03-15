@@ -7,8 +7,8 @@
 
 .pageTitle {
   font-size: 26px;
-  font-weight: 600;
-  color: #1e293b;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 .card {
@@ -234,4 +234,71 @@
   background: white;
   border-radius: 14px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.refreshOneBtn {
+  padding: 5px 9px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  white-space: nowrap;
+}
+
+.refreshOneBtn:hover {
+  background: #f1f5f9;
+  border-color: #14b8a6;
+  color: #0d9488;
+}
+
+.refreshOneBtnDone {
+  padding: 5px 9px;
+  border-radius: 6px;
+  border: 1px solid #86efac;
+  background: #f0fdf4;
+  color: #16a34a;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  white-space: nowrap;
+}
+
+@keyframes flashRow {
+  0%   { background: rgba(20, 184, 166, 0.12); }
+  100% { background: transparent; }
+}
+
+.rowFlash {
+  animation: flashRow 0.8s ease forwards;
+}
+
+.newBadge {
+  display: inline-block;
+  background: #14b8a6;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+
+.copyBtnDone {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid #86efac;
+  background: #f0fdf4;
+  color: #16a34a;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  white-space: nowrap;
 }
