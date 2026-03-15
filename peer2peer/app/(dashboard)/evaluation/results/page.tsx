@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import styles from "./results.module.css";
 import { api, Section, Evaluation } from "@/lib/api-client";
+import { exportResultsToExcel } from "@/lib/export-results";
 
 interface StudentResult {
   student: { id: number; name: string; email: string };
@@ -26,9 +27,8 @@ export default function ResultsPage() {
   const [selectedEvalId, setSelectedEvalId] = useState<number | null>(null);
   const [results, setResults] = useState<EvaluationResults | null>(null);
   const [resultsLoading, setResultsLoading] = useState(false);
-
-  // Student comments modal
   const [modalStudent, setModalStudent] = useState<StudentResult | null>(null);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     Promise.all([api.sections.list(), api.evaluations.list()])
@@ -45,6 +45,19 @@ export default function ResultsPage() {
     try { setResults(await api.evaluations.results(evalId)); }
     catch { setResults(null); }
     finally { setResultsLoading(false); }
+  };
+
+  const handleExport = async () => {
+    if (!results || !selectedEvalId) return;
+    setExporting(true);
+    try {
+      const sectionName = getSectionName(evaluations.find((e) => e.id === selectedEvalId)?.sectionId ?? 0);
+      exportResultsToExcel(results, sectionName);
+    } catch {
+      alert("Failed to export. Please try again.");
+    } finally {
+      setExporting(false);
+    }
   };
 
   const getSectionName = (id: number) => sections.find((s) => s.id === id)?.name ?? `Section #${id}`;
@@ -70,29 +83,21 @@ export default function ResultsPage() {
             boxShadow: "0 24px 64px rgba(0,0,0,0.2)",
             maxHeight: "80vh", overflowY: "auto",
           }}>
-            {/* Modal header */}
-            <div style={{
-              display: "flex", justifyContent: "space-between",
-              alignItems: "flex-start", marginBottom: "1.25rem",
-            }}>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
-                  <div style={{
-                    width: 36, height: 36, borderRadius: "50%",
-                    background: "linear-gradient(135deg, rgb(29,207,216), rgb(20,184,166))",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "0.85rem", fontWeight: 700, color: "#0f172a", flexShrink: 0,
-                  }}>
-                    {modalStudent.student.name.charAt(0).toUpperCase()}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.25rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{
+                  width: 36, height: 36, borderRadius: "50%",
+                  background: "linear-gradient(135deg, rgb(29,207,216), rgb(20,184,166))",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: "0.85rem", fontWeight: 700, color: "#0f172a", flexShrink: 0,
+                }}>
+                  {modalStudent.student.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: "1rem", color: "#0f172a" }}>
+                    {modalStudent.student.name}
                   </div>
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: "1rem", color: "#0f172a" }}>
-                      {modalStudent.student.name}
-                    </div>
-                    <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
-                      {modalStudent.student.email}
-                    </div>
-                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "#64748b" }}>{modalStudent.student.email}</div>
                 </div>
               </div>
               <button onClick={() => setModalStudent(null)} style={{
@@ -102,11 +107,8 @@ export default function ResultsPage() {
               }}>✕ Close</button>
             </div>
 
-            {/* Scores summary */}
-            <div style={{
-              background: "#f8fafc", borderRadius: "10px",
-              padding: "12px 14px", marginBottom: "1.25rem",
-            }}>
+            {/* Scores */}
+            <div style={{ background: "#f8fafc", borderRadius: "10px", padding: "12px 14px", marginBottom: "1.25rem" }}>
               <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#64748b", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                 Scores
               </div>
@@ -140,21 +142,16 @@ export default function ResultsPage() {
 
             {/* Comments */}
             <div>
-              <div style={{
-                fontSize: "0.75rem", fontWeight: 700, color: "#64748b",
-                marginBottom: "10px", textTransform: "uppercase", letterSpacing: "0.05em",
-              }}>
+              <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#64748b", marginBottom: "10px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                 💬 Comments ({modalStudent.comments.length})
               </div>
-
               {modalStudent.comments.length === 0 ? (
                 <div style={{
-                  textAlign: "center", padding: "24px",
-                  color: "#94a3b8", fontSize: "0.875rem",
-                  background: "#f8fafc", borderRadius: "10px",
+                  textAlign: "center", padding: "24px", color: "#94a3b8",
+                  fontSize: "0.875rem", background: "#f8fafc", borderRadius: "10px",
                   border: "1px dashed #e2e8f0",
                 }}>
-                  No one left a comment for this student.
+                  No comments left for this student.
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -164,24 +161,19 @@ export default function ResultsPage() {
                       padding: "12px 14px", border: "1px solid #e2e8f0",
                     }}>
                       <div style={{
-                        fontSize: "0.75rem", fontWeight: 700,
-                        color: "#475569", marginBottom: "6px",
-                        display: "flex", alignItems: "center", gap: "6px",
+                        fontSize: "0.75rem", fontWeight: 700, color: "#475569",
+                        marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px",
                       }}>
                         <div style={{
                           width: 22, height: 22, borderRadius: "50%",
-                          background: "#e2e8f0", display: "flex",
-                          alignItems: "center", justifyContent: "center",
-                          fontSize: "0.65rem", fontWeight: 700, color: "#64748b",
+                          background: "#e2e8f0", display: "flex", alignItems: "center",
+                          justifyContent: "center", fontSize: "0.65rem", fontWeight: 700, color: "#64748b",
                         }}>
                           {c.evaluatorName === "Anonymous" ? "?" : c.evaluatorName.charAt(0).toUpperCase()}
                         </div>
                         {c.evaluatorName}
                       </div>
-                      <p style={{
-                        margin: 0, fontSize: "0.875rem", color: "#374151",
-                        lineHeight: 1.6, fontStyle: "italic",
-                      }}>
+                      <p style={{ margin: 0, fontSize: "0.875rem", color: "#374151", lineHeight: 1.6, fontStyle: "italic" }}>
                         "{c.text}"
                       </p>
                     </div>
@@ -254,6 +246,7 @@ export default function ResultsPage() {
               <div style={{
                 background: "#0f172a", padding: "1rem 1.5rem",
                 display: "flex", justifyContent: "space-between", alignItems: "center",
+                flexWrap: "wrap", gap: "10px",
               }}>
                 <div>
                   <div style={{ color: "white", fontWeight: 700, fontSize: "1rem" }}>
@@ -263,11 +256,26 @@ export default function ResultsPage() {
                     {getSectionName(selectedEval?.sectionId ?? 0)} · Click a student row to view comments
                   </div>
                 </div>
-                <button onClick={() => { setSelectedEvalId(null); setResults(null); }} style={{
-                  background: "rgba(255,255,255,0.1)", border: "none", color: "white",
-                  borderRadius: "8px", padding: "6px 14px", cursor: "pointer",
-                  fontSize: "0.82rem", fontWeight: 600,
-                }}>✕ Close</button>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  {results && results.results.length > 0 && (
+                    <button onClick={handleExport} disabled={exporting} style={{
+                      padding: "7px 16px", borderRadius: "8px",
+                      border: "1px solid rgba(255,255,255,0.15)",
+                      background: exporting ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)",
+                      color: "white", fontWeight: 600, fontSize: "0.82rem",
+                      cursor: exporting ? "not-allowed" : "pointer",
+                      transition: "all 0.15s ease",
+                      display: "flex", alignItems: "center", gap: "6px",
+                    }}>
+                      {exporting ? "⏳ Exporting..." : "📥 Export to Excel"}
+                    </button>
+                  )}
+                  <button onClick={() => { setSelectedEvalId(null); setResults(null); }} style={{
+                    background: "rgba(255,255,255,0.1)", border: "none", color: "white",
+                    borderRadius: "8px", padding: "6px 14px", cursor: "pointer",
+                    fontSize: "0.82rem", fontWeight: 600,
+                  }}>✕ Close</button>
+                </div>
               </div>
 
               <div style={{ padding: "1.5rem" }}>

@@ -6,7 +6,6 @@ import { requireAdmin } from "@/lib/auth";
 export async function GET(req: NextRequest) {
   try {
     const user = requireAdmin(req);
-
     const evaluations = await prisma.evaluation.findMany({
       where: { createdBy: user.id },
       include: {
@@ -16,7 +15,6 @@ export async function GET(req: NextRequest) {
       },
       orderBy: { createdAt: "desc" },
     });
-
     return NextResponse.json(evaluations);
   } catch (err: any) {
     if (err.message === "UNAUTHORIZED") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -28,8 +26,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const user = requireAdmin(req);
-
-    const { title, description, sectionId, criteria, deadline, anonymous } = await req.json();
+    const { title, description, sectionId, criteria, scoreOptions, deadline, anonymous } = await req.json();
 
     if (!title || !sectionId) {
       return NextResponse.json({ error: "title and sectionId are required" }, { status: 400 });
@@ -38,9 +35,7 @@ export async function POST(req: NextRequest) {
     const section = await prisma.section.findFirst({
       where: { id: Number(sectionId), createdBy: user.id },
     });
-    if (!section) {
-      return NextResponse.json({ error: "Section not found" }, { status: 404 });
-    }
+    if (!section) return NextResponse.json({ error: "Section not found" }, { status: 404 });
 
     const evaluation = await prisma.evaluation.create({
       data: {
@@ -51,7 +46,13 @@ export async function POST(req: NextRequest) {
         deadline: deadline ? new Date(deadline) : null,
         anonymous: typeof anonymous === "boolean" ? anonymous : true,
         criteria: {
-          create: (criteria as string[]).map((name) => ({ criterionName: name })),
+          create: (criteria as string[]).map((name: string, i: number) => ({
+            criterionName: name,
+            // Store scoreOptions as JSON string if provided
+            scoreOptions: scoreOptions?.[i]
+              ? JSON.stringify(scoreOptions[i])
+              : null,
+          })),
         },
       },
       include: { criteria: true },

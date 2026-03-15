@@ -6181,18 +6181,21 @@ export namespace Prisma {
   export type EvaluationCriteriaMinAggregateOutputType = {
     id: number | null
     criterionName: string | null
+    scoreOptions: string | null
     evaluationId: number | null
   }
 
   export type EvaluationCriteriaMaxAggregateOutputType = {
     id: number | null
     criterionName: string | null
+    scoreOptions: string | null
     evaluationId: number | null
   }
 
   export type EvaluationCriteriaCountAggregateOutputType = {
     id: number
     criterionName: number
+    scoreOptions: number
     evaluationId: number
     _all: number
   }
@@ -6211,18 +6214,21 @@ export namespace Prisma {
   export type EvaluationCriteriaMinAggregateInputType = {
     id?: true
     criterionName?: true
+    scoreOptions?: true
     evaluationId?: true
   }
 
   export type EvaluationCriteriaMaxAggregateInputType = {
     id?: true
     criterionName?: true
+    scoreOptions?: true
     evaluationId?: true
   }
 
   export type EvaluationCriteriaCountAggregateInputType = {
     id?: true
     criterionName?: true
+    scoreOptions?: true
     evaluationId?: true
     _all?: true
   }
@@ -6316,6 +6322,7 @@ export namespace Prisma {
   export type EvaluationCriteriaGroupByOutputType = {
     id: number
     criterionName: string
+    scoreOptions: string | null
     evaluationId: number
     _count: EvaluationCriteriaCountAggregateOutputType | null
     _avg: EvaluationCriteriaAvgAggregateOutputType | null
@@ -6341,6 +6348,7 @@ export namespace Prisma {
   export type EvaluationCriteriaSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     criterionName?: boolean
+    scoreOptions?: boolean
     evaluationId?: boolean
     evaluation?: boolean | EvaluationDefaultArgs<ExtArgs>
     responses?: boolean | EvaluationCriteria$responsesArgs<ExtArgs>
@@ -6350,6 +6358,7 @@ export namespace Prisma {
   export type EvaluationCriteriaSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     criterionName?: boolean
+    scoreOptions?: boolean
     evaluationId?: boolean
     evaluation?: boolean | EvaluationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["evaluationCriteria"]>
@@ -6357,6 +6366,7 @@ export namespace Prisma {
   export type EvaluationCriteriaSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     criterionName?: boolean
+    scoreOptions?: boolean
     evaluationId?: boolean
     evaluation?: boolean | EvaluationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["evaluationCriteria"]>
@@ -6364,10 +6374,11 @@ export namespace Prisma {
   export type EvaluationCriteriaSelectScalar = {
     id?: boolean
     criterionName?: boolean
+    scoreOptions?: boolean
     evaluationId?: boolean
   }
 
-  export type EvaluationCriteriaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "criterionName" | "evaluationId", ExtArgs["result"]["evaluationCriteria"]>
+  export type EvaluationCriteriaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "criterionName" | "scoreOptions" | "evaluationId", ExtArgs["result"]["evaluationCriteria"]>
   export type EvaluationCriteriaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     evaluation?: boolean | EvaluationDefaultArgs<ExtArgs>
     responses?: boolean | EvaluationCriteria$responsesArgs<ExtArgs>
@@ -6389,6 +6400,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       criterionName: string
+      scoreOptions: string | null
       evaluationId: number
     }, ExtArgs["result"]["evaluationCriteria"]>
     composites: {}
@@ -6817,6 +6829,7 @@ export namespace Prisma {
   interface EvaluationCriteriaFieldRefs {
     readonly id: FieldRef<"EvaluationCriteria", 'Int'>
     readonly criterionName: FieldRef<"EvaluationCriteria", 'String'>
+    readonly scoreOptions: FieldRef<"EvaluationCriteria", 'String'>
     readonly evaluationId: FieldRef<"EvaluationCriteria", 'Int'>
   }
     
@@ -8482,6 +8495,7 @@ export namespace Prisma {
   export const EvaluationCriteriaScalarFieldEnum: {
     id: 'id',
     criterionName: 'criterionName',
+    scoreOptions: 'scoreOptions',
     evaluationId: 'evaluationId'
   };
 
@@ -8869,6 +8883,7 @@ export namespace Prisma {
     NOT?: EvaluationCriteriaWhereInput | EvaluationCriteriaWhereInput[]
     id?: IntFilter<"EvaluationCriteria"> | number
     criterionName?: StringFilter<"EvaluationCriteria"> | string
+    scoreOptions?: StringNullableFilter<"EvaluationCriteria"> | string | null
     evaluationId?: IntFilter<"EvaluationCriteria"> | number
     evaluation?: XOR<EvaluationScalarRelationFilter, EvaluationWhereInput>
     responses?: EvaluationResponseListRelationFilter
@@ -8877,6 +8892,7 @@ export namespace Prisma {
   export type EvaluationCriteriaOrderByWithRelationInput = {
     id?: SortOrder
     criterionName?: SortOrder
+    scoreOptions?: SortOrderInput | SortOrder
     evaluationId?: SortOrder
     evaluation?: EvaluationOrderByWithRelationInput
     responses?: EvaluationResponseOrderByRelationAggregateInput
@@ -8888,6 +8904,7 @@ export namespace Prisma {
     OR?: EvaluationCriteriaWhereInput[]
     NOT?: EvaluationCriteriaWhereInput | EvaluationCriteriaWhereInput[]
     criterionName?: StringFilter<"EvaluationCriteria"> | string
+    scoreOptions?: StringNullableFilter<"EvaluationCriteria"> | string | null
     evaluationId?: IntFilter<"EvaluationCriteria"> | number
     evaluation?: XOR<EvaluationScalarRelationFilter, EvaluationWhereInput>
     responses?: EvaluationResponseListRelationFilter
@@ -8896,6 +8913,7 @@ export namespace Prisma {
   export type EvaluationCriteriaOrderByWithAggregationInput = {
     id?: SortOrder
     criterionName?: SortOrder
+    scoreOptions?: SortOrderInput | SortOrder
     evaluationId?: SortOrder
     _count?: EvaluationCriteriaCountOrderByAggregateInput
     _avg?: EvaluationCriteriaAvgOrderByAggregateInput
@@ -8910,6 +8928,7 @@ export namespace Prisma {
     NOT?: EvaluationCriteriaScalarWhereWithAggregatesInput | EvaluationCriteriaScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"EvaluationCriteria"> | number
     criterionName?: StringWithAggregatesFilter<"EvaluationCriteria"> | string
+    scoreOptions?: StringNullableWithAggregatesFilter<"EvaluationCriteria"> | string | null
     evaluationId?: IntWithAggregatesFilter<"EvaluationCriteria"> | number
   }
 
@@ -9252,6 +9271,7 @@ export namespace Prisma {
 
   export type EvaluationCriteriaCreateInput = {
     criterionName: string
+    scoreOptions?: string | null
     evaluation: EvaluationCreateNestedOneWithoutCriteriaInput
     responses?: EvaluationResponseCreateNestedManyWithoutCriterionInput
   }
@@ -9259,12 +9279,14 @@ export namespace Prisma {
   export type EvaluationCriteriaUncheckedCreateInput = {
     id?: number
     criterionName: string
+    scoreOptions?: string | null
     evaluationId: number
     responses?: EvaluationResponseUncheckedCreateNestedManyWithoutCriterionInput
   }
 
   export type EvaluationCriteriaUpdateInput = {
     criterionName?: StringFieldUpdateOperationsInput | string
+    scoreOptions?: NullableStringFieldUpdateOperationsInput | string | null
     evaluation?: EvaluationUpdateOneRequiredWithoutCriteriaNestedInput
     responses?: EvaluationResponseUpdateManyWithoutCriterionNestedInput
   }
@@ -9272,6 +9294,7 @@ export namespace Prisma {
   export type EvaluationCriteriaUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     criterionName?: StringFieldUpdateOperationsInput | string
+    scoreOptions?: NullableStringFieldUpdateOperationsInput | string | null
     evaluationId?: IntFieldUpdateOperationsInput | number
     responses?: EvaluationResponseUncheckedUpdateManyWithoutCriterionNestedInput
   }
@@ -9279,16 +9302,19 @@ export namespace Prisma {
   export type EvaluationCriteriaCreateManyInput = {
     id?: number
     criterionName: string
+    scoreOptions?: string | null
     evaluationId: number
   }
 
   export type EvaluationCriteriaUpdateManyMutationInput = {
     criterionName?: StringFieldUpdateOperationsInput | string
+    scoreOptions?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EvaluationCriteriaUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     criterionName?: StringFieldUpdateOperationsInput | string
+    scoreOptions?: NullableStringFieldUpdateOperationsInput | string | null
     evaluationId?: IntFieldUpdateOperationsInput | number
   }
 
@@ -9729,6 +9755,7 @@ export namespace Prisma {
   export type EvaluationCriteriaCountOrderByAggregateInput = {
     id?: SortOrder
     criterionName?: SortOrder
+    scoreOptions?: SortOrder
     evaluationId?: SortOrder
   }
 
@@ -9740,12 +9767,14 @@ export namespace Prisma {
   export type EvaluationCriteriaMaxOrderByAggregateInput = {
     id?: SortOrder
     criterionName?: SortOrder
+    scoreOptions?: SortOrder
     evaluationId?: SortOrder
   }
 
   export type EvaluationCriteriaMinOrderByAggregateInput = {
     id?: SortOrder
     criterionName?: SortOrder
+    scoreOptions?: SortOrder
     evaluationId?: SortOrder
   }
 
@@ -10983,12 +11012,14 @@ export namespace Prisma {
 
   export type EvaluationCriteriaCreateWithoutEvaluationInput = {
     criterionName: string
+    scoreOptions?: string | null
     responses?: EvaluationResponseCreateNestedManyWithoutCriterionInput
   }
 
   export type EvaluationCriteriaUncheckedCreateWithoutEvaluationInput = {
     id?: number
     criterionName: string
+    scoreOptions?: string | null
     responses?: EvaluationResponseUncheckedCreateNestedManyWithoutCriterionInput
   }
 
@@ -11107,6 +11138,7 @@ export namespace Prisma {
     NOT?: EvaluationCriteriaScalarWhereInput | EvaluationCriteriaScalarWhereInput[]
     id?: IntFilter<"EvaluationCriteria"> | number
     criterionName?: StringFilter<"EvaluationCriteria"> | string
+    scoreOptions?: StringNullableFilter<"EvaluationCriteria"> | string | null
     evaluationId?: IntFilter<"EvaluationCriteria"> | number
   }
 
@@ -11305,12 +11337,14 @@ export namespace Prisma {
 
   export type EvaluationCriteriaCreateWithoutResponsesInput = {
     criterionName: string
+    scoreOptions?: string | null
     evaluation: EvaluationCreateNestedOneWithoutCriteriaInput
   }
 
   export type EvaluationCriteriaUncheckedCreateWithoutResponsesInput = {
     id?: number
     criterionName: string
+    scoreOptions?: string | null
     evaluationId: number
   }
 
@@ -11422,12 +11456,14 @@ export namespace Prisma {
 
   export type EvaluationCriteriaUpdateWithoutResponsesInput = {
     criterionName?: StringFieldUpdateOperationsInput | string
+    scoreOptions?: NullableStringFieldUpdateOperationsInput | string | null
     evaluation?: EvaluationUpdateOneRequiredWithoutCriteriaNestedInput
   }
 
   export type EvaluationCriteriaUncheckedUpdateWithoutResponsesInput = {
     id?: IntFieldUpdateOperationsInput | number
     criterionName?: StringFieldUpdateOperationsInput | string
+    scoreOptions?: NullableStringFieldUpdateOperationsInput | string | null
     evaluationId?: IntFieldUpdateOperationsInput | number
   }
 
@@ -11652,6 +11688,7 @@ export namespace Prisma {
   export type EvaluationCriteriaCreateManyEvaluationInput = {
     id?: number
     criterionName: string
+    scoreOptions?: string | null
   }
 
   export type EvaluationResponseCreateManyEvaluationInput = {
@@ -11665,18 +11702,21 @@ export namespace Prisma {
 
   export type EvaluationCriteriaUpdateWithoutEvaluationInput = {
     criterionName?: StringFieldUpdateOperationsInput | string
+    scoreOptions?: NullableStringFieldUpdateOperationsInput | string | null
     responses?: EvaluationResponseUpdateManyWithoutCriterionNestedInput
   }
 
   export type EvaluationCriteriaUncheckedUpdateWithoutEvaluationInput = {
     id?: IntFieldUpdateOperationsInput | number
     criterionName?: StringFieldUpdateOperationsInput | string
+    scoreOptions?: NullableStringFieldUpdateOperationsInput | string | null
     responses?: EvaluationResponseUncheckedUpdateManyWithoutCriterionNestedInput
   }
 
   export type EvaluationCriteriaUncheckedUpdateManyWithoutEvaluationInput = {
     id?: IntFieldUpdateOperationsInput | number
     criterionName?: StringFieldUpdateOperationsInput | string
+    scoreOptions?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type EvaluationResponseUpdateWithoutEvaluationInput = {

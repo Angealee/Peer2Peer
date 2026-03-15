@@ -66,13 +66,13 @@ model Evaluation {
 }
 
 model EvaluationCriteria {
-  id            Int    @id @default(autoincrement())
+  id            Int     @id @default(autoincrement())
   criterionName String
+  scoreOptions  String? // JSON: [{value:number, label:string}]
 
   evaluationId Int
-  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
-
-  responses EvaluationResponse[]
+  evaluation   Evaluation           @relation(fields: [evaluationId], references: [id])
+  responses    EvaluationResponse[]
 }
 
 model EvaluationResponse {

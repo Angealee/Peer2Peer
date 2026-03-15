@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import styles from "./token.module.css";
 
-interface Criterion { id: number; name: string; }
+interface ScoreOption { value: number; label: string; }
+interface Criterion { id: number; name: string; scoreOptions: ScoreOption[]; }
 interface Peer { id: number; name: string; }
 interface EvaluationData {
   student: { id: number; name: string; email: string };
@@ -18,15 +19,27 @@ interface EvaluationData {
 }
 
 // ── Score Button ──────────────────────────────────────────────────────────────
-function ScoreButton({ value, selected, onClick }: {
-  value: number; selected: boolean; onClick: () => void;
+function ScoreButton({ option, selected, onClick }: {
+  option: ScoreOption; selected: boolean; onClick: () => void;
 }) {
   return (
     <button
       onClick={onClick}
       className={selected ? styles.scoreBtnSelected : styles.scoreBtn}
+      style={{ minWidth: 40, height: 40, padding: "0 10px", flexShrink: 0 }}
+      title={option.label}
     >
-      {value}
+      <span style={{ display: "block", fontWeight: 700, fontSize: 15, lineHeight: 1 }}>
+        {option.value}
+      </span>
+      {option.label && (
+        <span style={{
+          display: "block", fontSize: 9, lineHeight: 1,
+          marginTop: 2, opacity: 0.75, whiteSpace: "nowrap",
+        }}>
+          {option.label}
+        </span>
+      )}
     </button>
   );
 }
@@ -80,17 +93,15 @@ function PeerCard({ peer, criteria, scores, comment, onScore, onComment, isActiv
           {criteria.map((criterion) => (
             <div key={criterion.id} className={styles.criterionRow}>
               <div className={styles.criterionName}>{criterion.name}</div>
-              <div className={styles.scoreRow}>
-                <span className={styles.scoreLabel}>Poor</span>
-                {[1, 2, 3, 4, 5].map((score) => (
+              <div className={styles.scoreRow} style={{ flexWrap: "wrap", gap: 6 }}>
+                {criterion.scoreOptions.map((opt) => (
                   <ScoreButton
-                    key={score}
-                    value={score}
-                    selected={scores[criterion.id] === score}
-                    onClick={() => onScore(criterion.id, score)}
+                    key={opt.value}
+                    option={opt}
+                    selected={scores[criterion.id] === opt.value}
+                    onClick={() => onScore(criterion.id, opt.value)}
                   />
                 ))}
-                <span className={styles.scoreLabel}>Excellent</span>
               </div>
             </div>
           ))}
@@ -249,7 +260,7 @@ export default function EvaluatePage() {
             <h1 className={styles.evalTitle}>{data.evaluation.title}</h1>
             <div className={styles.evalBadge}>Peer Evaluation</div>
           </div>
-          
+
           {data.evaluation.description && (
             <p className={styles.evalDesc}>{data.evaluation.description}</p>
           )}
@@ -283,8 +294,7 @@ export default function EvaluatePage() {
         </div>
 
         <p className={styles.instruction}>
-          Rate each classmate on a scale of <strong>1–5</strong> for every criterion.
-          Click a name to expand.
+          Rate each classmate for every criterion. Click a name to expand.
         </p>
 
         {/* Peer cards */}
