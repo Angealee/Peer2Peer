@@ -26,16 +26,17 @@ function ScoreButton({ option, selected, onClick }: {
     <button
       onClick={onClick}
       className={selected ? styles.scoreBtnSelected : styles.scoreBtn}
-      style={{ minWidth: 40, height: 40, padding: "0 10px", flexShrink: 0 }}
       title={option.label}
     >
-      <span style={{ display: "block", fontWeight: 700, fontSize: 15, lineHeight: 1 }}>
+      <span style={{ fontSize: 16, fontWeight: 800, lineHeight: 1 }}>
         {option.value}
       </span>
       {option.label && (
         <span style={{
-          display: "block", fontSize: 9, lineHeight: 1,
-          marginTop: 2, opacity: 0.75, whiteSpace: "nowrap",
+          fontSize: 10, lineHeight: 1,
+          opacity: selected ? 0.9 : 0.6,
+          whiteSpace: "nowrap", maxWidth: 56,
+          overflow: "hidden", textOverflow: "ellipsis",
         }}>
           {option.label}
         </span>
@@ -94,7 +95,13 @@ function PeerCard({ peer, criteria, scores, comment, onScore, onComment, isActiv
             <div key={criterion.id} className={styles.criterionRow}>
               <div className={styles.criterionName}>{criterion.name}</div>
               <div className={styles.scoreRow} style={{ flexWrap: "wrap", gap: 6 }}>
-                {criterion.scoreOptions.map((opt) => (
+                {(criterion.scoreOptions ?? [
+                  { value: 1, label: "Poor" },
+                  { value: 2, label: "Fair" },
+                  { value: 3, label: "Good" },
+                  { value: 4, label: "Great" },
+                  { value: 5, label: "Excellent" },
+                ]).map((opt) => (
                   <ScoreButton
                     key={opt.value}
                     option={opt}

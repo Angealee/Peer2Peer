@@ -1,6 +1,4 @@
 // app/api/evaluate/[token]/route.ts
-// GET /api/evaluate/:token
-
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
@@ -13,16 +11,15 @@ function decodeToken(token: string): { studentId: number; evaluationId: number }
     if (!parsed.studentId || !parsed.evaluationId) return null;
     return parsed;
   } catch (e) {
-    console.error("[decodeToken] failed:", e);
     return null;
   }
 }
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ token: string }> }  // ← Next.js 15: params is a Promise
+  { params }: { params: Promise<{ token: string }> }
 ) {
-  const { token } = await params;  // ← must await before accessing
+  const { token } = await params;
   const payload = decodeToken(token);
 
   if (!payload) {
@@ -54,8 +51,6 @@ export async function GET(
     where: { evaluationId, evaluatorStudentId: studentId },
   });
 
-  // Treat deadline as end-of-day to avoid UTC midnight timezone issues
-  // (Philippines = UTC+8, so midnight UTC = 8AM PH which looks already expired)
   let isExpired = false;
   if (evaluation.deadline) {
     const deadline = new Date(evaluation.deadline);
@@ -71,7 +66,20 @@ export async function GET(
       description: evaluation.description,
       deadline: evaluation.deadline,
       anonymous: evaluation.anonymous,
-      criteria: evaluation.criteria.map((c) => ({ id: c.id, name: c.criterionName })),
+      criteria: evaluation.criteria.map((c) => ({
+        id: c.id,
+        name: c.criterionName,
+        // Parse scoreOptions from JSON string, fallback to default 1-5
+        scoreOptions: c.scoreOptions
+          ? JSON.parse(c.scoreOptions)
+          : [
+              { value: 1, label: "Poor" },
+              { value: 2, label: "Fair" },
+              { value: 3, label: "Good" },
+              { value: 4, label: "Great" },
+              { value: 5, label: "Excellent" },
+            ],
+      })),
     },
     peers: peers.map((p) => ({ id: p.id, name: p.name })),
     alreadySubmitted: !!existingResponse,
