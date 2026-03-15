@@ -288,7 +288,7 @@ export default function CreateEvaluationPage() {
             padding: "10px 14px", fontSize: "0.85rem", color: "#92400e", marginBottom: "1rem",
             display: "flex", justifyContent: "space-between", alignItems: "center",
           }}>
-            <span>✏️ Editing — section cannot be changed</span>
+            <span>✏️ Editing — section cannot be changed  <strong>Saving will delete all existing student responses.</strong></span>
             <button type="button" onClick={resetForm} style={{
               background: "none", border: "none", cursor: "pointer", color: "#92400e", fontWeight: 700,
             }}>✕ Cancel</button>

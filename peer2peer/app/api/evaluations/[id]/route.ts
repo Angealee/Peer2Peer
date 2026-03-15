@@ -24,7 +24,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const user = requireAdmin(req);
     const { id } = await params;
     const evalId = Number(id);
-    const { title, description, deadline, anonymous, criteria } = await req.json();
+
+    // ← scoreOptions added here
+    const { title, description, deadline, anonymous, criteria, scoreOptions } = await req.json();
 
     const existing = await prisma.evaluation.findFirst({ where: { id: evalId, createdBy: user.id } });
     if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -35,9 +37,28 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     });
 
     if (criteria && Array.isArray(criteria)) {
+      // Get existing criterion IDs
+      const existingCriteria = await prisma.evaluationCriteria.findMany({
+        where: { evaluationId: evalId },
+        select: { id: true },
+      });
+      const criterionIds = existingCriteria.map((c) => c.id);
+
+      // Delete responses first (FK constraint)
+      await prisma.evaluationResponse.deleteMany({
+        where: { criterionId: { in: criterionIds } },
+      });
+
+      // Now safe to delete criteria
       await prisma.evaluationCriteria.deleteMany({ where: { evaluationId: evalId } });
+
+      // Recreate criteria with scoreOptions
       await prisma.evaluationCriteria.createMany({
-        data: criteria.map((name: string) => ({ evaluationId: evalId, criterionName: name })),
+        data: criteria.map((name: string, i: number) => ({
+          evaluationId: evalId,
+          criterionName: name,
+          scoreOptions: scoreOptions?.[i] ? JSON.stringify(scoreOptions[i]) : null,
+        })),
       });
     }
 

@@ -365,8 +365,8 @@
 }
 .scoreRow {
   display: flex;
-  gap: 8px;
-  align-items: center;
+  gap: 10px;
+  align-items: flex-start;
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 4px;
@@ -378,24 +378,21 @@
 
 /* ── Score button ── */
 .scoreBtn {
-  min-width: 52px;
-  height: 52px;
+  min-width: 60px;
+  height: 44px;
   border-radius: 10px;
-  border: 2px solid #e2e8f0;
-  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
   color: #374151;
-  font-weight: 700;
-  font-size: 14px;
+  font-weight: 800;
+  font-size: 18px;
   cursor: pointer;
   transition: all 0.15s ease;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  padding: 4px 8px;
-  line-height: 1.2;
-  gap: 2px;
+  padding: 0 14px;
 }
 
 .scoreBtn:hover {
@@ -407,25 +404,46 @@
 }
 
 .scoreBtnSelected {
-  min-width: 60px;
-  height: 60px;
-  /* border-radius: 12px; */
+  min-width: 70px;
+  height: 58px;
+  /* border-radius: 10px; */
   border: 2px solid #2563eb;
-  background: #2564eb77;
-  color: #000000;
-  font-weight: 700;
-  font-size: 16px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 800;
+  font-size: 21px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.25s ease;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  padding: 6px 10px;
-  gap: 3px;
+  padding: 0 14px;
   /* box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
   transform: translateY(-2px); */
+}
+
+.scoreOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.scoreOptionLabel {
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.scoreOptionLabelSelected {
+  font-size: 11px;
+  color: #2563eb;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
 }
 
 /* ── Comment box ── */

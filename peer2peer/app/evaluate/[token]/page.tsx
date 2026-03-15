@@ -23,25 +23,20 @@ function ScoreButton({ option, selected, onClick }: {
   option: ScoreOption; selected: boolean; onClick: () => void;
 }) {
   return (
-    <button
-      onClick={onClick}
-      className={selected ? styles.scoreBtnSelected : styles.scoreBtn}
-      title={option.label}
-    >
-      <span style={{ fontSize: 16, fontWeight: 800, lineHeight: 1 }}>
+    <div className={styles.scoreOption}>
+      <button
+        onClick={onClick}
+        className={selected ? styles.scoreBtnSelected : styles.scoreBtn}
+        title={option.label}
+      >
         {option.value}
-      </span>
+      </button>
       {option.label && (
-        <span style={{
-          fontSize: 10, lineHeight: 1,
-          opacity: selected ? 0.9 : 0.6,
-          whiteSpace: "nowrap", maxWidth: 56,
-          overflow: "hidden", textOverflow: "ellipsis",
-        }}>
+        <span className={selected ? styles.scoreOptionLabelSelected : styles.scoreOptionLabel}>
           {option.label}
         </span>
       )}
-    </button>
+    </div>
   );
 }
 
