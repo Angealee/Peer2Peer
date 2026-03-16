@@ -198,145 +198,139 @@ export default function ResultsPage() {
 
       {/* RESULTS PANEL */}
 
-      {selectedEvalId && (
+      {/* RESULTS PANEL */}
 
-        <div className={styles.tableCard}>
+{selectedEvalId && (
 
-          <div
-            style={{
-              background: "#0f172a",
-              padding: 16,
-              color: "white",
-            }}
-          >
-            <div>
-              {selectedEval?.title}
-            </div>
+  <div className={styles.tableCard}>
 
-            <div
-              style={{
-                fontSize: 12,
-                opacity: 0.6,
-              }}
-            >
-              {getSectionName(
-                selectedEval
-              )}
-            </div>
+    <div className={styles.resultsHeader}>
+      <div>
+        {selectedEval?.title}
+      </div>
 
-            {results && (
-              <button
-                onClick={handleExport}
-              >
-                Export
-              </button>
-            )}
-          </div>
+      <div
+        style={{
+          fontSize: 12,
+          opacity: 0.6,
+        }}
+      >
+        {getSectionName(
+          selectedEval
+        )}
+      </div>
 
-          <div style={{ padding: 16 }}>
+      {results && (
+        <button
+          onClick={handleExport}
+        >
+          Export
+        </button>
+      )}
+    </div>
 
-            {resultsLoading && (
-              <p>Loading...</p>
-            )}
 
-            {!results ||
-              results.results.length ===
-                0 ? (
-              <p>
-                No submissions yet.
-              </p>
-            ) : (
+    <div className={styles.resultsContent}>
 
-              <table
-                className={
-                  styles.table
-                }
-              >
-                <thead>
-                  <tr>
-                    <th>
-                      Student
-                    </th>
+      {resultsLoading && (
+        <p>Loading...</p>
+      )}
 
-                    {results.results[0]
-                      ?.scores.map(
-                        sc => (
-                          <th
-                            key={
-                              sc.criterion
-                            }
-                          >
-                            {
-                              sc.criterion
-                            }
-                          </th>
-                        )
-                      )}
+      {!results ||
+        results.results.length === 0 ? (
+        <p>
+          No submissions yet.
+        </p>
+      ) : (
 
-                    <th>
-                      Avg
-                    </th>
+        <div className={styles.tableWrapper}>
 
-                    <th>
-                      Comments
-                    </th>
-                  </tr>
-                </thead>
+          <table className={styles.table}>
 
-                <tbody>
-                  {results.results.map(
-                    r => (
-                      <tr
+            <thead>
+              <tr>
+
+                <th>Student</th>
+
+                {results.results[0]
+                  ?.scores.map(
+                    sc => (
+                      <th
                         key={
-                          r.student.id
+                          sc.criterion
                         }
                       >
-                        <td>
-                          {
-                            r.student
-                              .name
+                        {sc.criterion}
+                      </th>
+                    )
+                  )}
+
+                <th>Avg</th>
+                <th>Comments</th>
+
+              </tr>
+            </thead>
+
+
+            <tbody>
+
+              {results.results.map(
+                r => (
+
+                  <tr
+                    key={
+                      r.student.id
+                    }
+                  >
+
+                    <td>
+                      {r.student.name}
+                    </td>
+
+                    {r.scores.map(
+                      sc => (
+                        <td
+                          key={
+                            sc.criterion
                           }
-                        </td>
-
-                        {r.scores.map(
-                          sc => (
-                            <td
-                              key={
-                                sc.criterion
-                              }
-                            >
-                              {sc.average.toFixed(
-                                2
-                              )}
-                            </td>
-                          )
-                        )}
-
-                        <td>
-                          {r.overallAverage.toFixed(
+                        >
+                          {sc.average.toFixed(
                             2
                           )}
                         </td>
+                      )
+                    )}
 
-                        <td>
-                          {
-                            r.comments
-                              .length
-                          }
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
+                    <td>
+                      {r.overallAverage.toFixed(
+                        2
+                      )}
+                    </td>
 
-            )}
+                    <td>
+                      {
+                        r.comments.length
+                      }
+                    </td>
 
-          </div>
+                  </tr>
+
+                )
+              )}
+
+            </tbody>
+
+          </table>
 
         </div>
 
       )}
+
+    </div>
+
+  </div>
+
+)}
 
     </div>
   );

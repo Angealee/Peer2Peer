@@ -157,8 +157,8 @@ exports.Prisma.EvaluationScalarFieldEnum = {
 exports.Prisma.EvaluationCriteriaScalarFieldEnum = {
   id: 'id',
   criterionName: 'criterionName',
-  scoreOptions: 'scoreOptions',
-  evaluationId: 'evaluationId'
+  evaluationId: 'evaluationId',
+  scoreOptions: 'scoreOptions'
 };
 
 exports.Prisma.EvaluationResponseScalarFieldEnum = {

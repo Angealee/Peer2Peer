@@ -9,88 +9,78 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  name     String
-  email    String @unique
-  password String
-  role     String
-
-  sections    Section[]
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String       @unique
+  password    String
+  role        String
   evaluations Evaluation[]
+  sections    Section[]
 }
 
 model Section {
-  id          Int     @id @default(autoincrement())
-  name        String
-  description String?
-
-  createdBy  Int
-  instructor User @relation(fields: [createdBy], references: [id])
-
-  students           Student[]
+  id                 Int                 @id @default(autoincrement())
+  name               String
+  description        String?
+  createdBy          Int
+  createdAt          DateTime            @default(now())
   evaluationSections EvaluationSection[]
-
-  createdAt DateTime @default(now())
+  instructor         User                @relation(fields: [createdBy], references: [id])
+  students           Student[]
 }
 
 model Student {
-  id        Int    @id @default(autoincrement())
-  name      String
-  email     String
-  studentId String
-
-  sectionId Int
-  section   Section @relation(fields: [sectionId], references: [id])
-
-  evaluationsGiven    EvaluationResponse[] @relation("Evaluator")
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  email               String
+  studentId           String
+  sectionId           Int
   evaluationsReceived EvaluationResponse[] @relation("Evaluated")
+  evaluationsGiven    EvaluationResponse[] @relation("Evaluator")
+  section             Section              @relation(fields: [sectionId], references: [id])
 }
 
 model Evaluation {
-  id          Int       @id @default(autoincrement())
+  id          Int                  @id @default(autoincrement())
   title       String
   description String?
   deadline    DateTime?
-  anonymous   Boolean   @default(true)
-
-  createdBy  Int
-  instructor User @relation(fields: [createdBy], references: [id])
-
-  criteria  EvaluationCriteria[]
-  responses EvaluationResponse[]
-  sections  EvaluationSection[]
-
-  createdAt DateTime @default(now())
+  anonymous   Boolean              @default(true)
+  createdBy   Int
+  createdAt   DateTime             @default(now())
+  instructor  User                 @relation(fields: [createdBy], references: [id])
+  criteria    EvaluationCriteria[]
+  responses   EvaluationResponse[]
+  sections    EvaluationSection[]
 }
 
 model EvaluationCriteria {
-  id            Int     @id @default(autoincrement())
+  id            Int                  @id @default(autoincrement())
   criterionName String
-  scoreOptions  String? // JSON: [{value:number, label:string}]
-
-  evaluationId Int
-  evaluation   Evaluation           @relation(fields: [evaluationId], references: [id])
-  responses    EvaluationResponse[]
+  evaluationId  Int
+  scoreOptions  String?
+  evaluation    Evaluation           @relation(fields: [evaluationId], references: [id])
+  responses     EvaluationResponse[]
 }
 
 model EvaluationResponse {
   id                 Int                @id @default(autoincrement())
   evaluationId       Int
-  evaluation         Evaluation         @relation(fields: [evaluationId], references: [id])
   evaluatorStudentId Int
-  evaluatorStudent   Student            @relation("Evaluator", fields: [evaluatorStudentId], references: [id])
   evaluatedStudentId Int
-  evaluatedStudent   Student            @relation("Evaluated", fields: [evaluatedStudentId], references: [id])
   criterionId        Int
-  criterion          EvaluationCriteria @relation(fields: [criterionId], references: [id])
   score              Int
   comment            String?
+  criterion          EvaluationCriteria @relation(fields: [criterionId], references: [id])
+  evaluatedStudent   Student            @relation("Evaluated", fields: [evaluatedStudentId], references: [id])
+  evaluation         Evaluation         @relation(fields: [evaluationId], references: [id])
+  evaluatorStudent   Student            @relation("Evaluator", fields: [evaluatorStudentId], references: [id])
 }
 
 model EvaluationSection {
   id           Int        @id @default(autoincrement())
   evaluationId Int
-  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
   sectionId    Int
+  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
   section      Section    @relation(fields: [sectionId], references: [id])
 }

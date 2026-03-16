@@ -34,9 +34,25 @@
   font-weight: 600;
   display: flex;
   justify-content: space-between;
-  background: #f9fafb;
+  background: #d8d8d8;
   border: none;
   cursor: pointer;
+}
+
+/* header */
+
+.resultsHeader {
+  background: #0f172a;
+  color: white;
+  padding: 16px;
+}
+
+/* content */
+
+.resultsContent {
+  padding: 16px;
+  color: #111827; /* ✅ force readable text */
+  background: white;
 }
 
 .accordionContent {
@@ -67,18 +83,28 @@
 .card p {
   font-size: 1.5rem;
   font-weight: bold;
+  color: #d8d8d8;
 }
 
 /* Table */
 
 .tableCard {
   margin-top: 0.5rem;
+  background: white;   /* ✅ important */
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
 }
 
 .table {
-  width: 100%;
+  width: max-content;   /* important */
+  min-width: 100%;
   border-collapse: collapse;
+  color: #111827;
+  background: white;
 }
+
+
 
 .table th {
   text-align: left;
@@ -89,4 +115,25 @@
 .table td {
   padding: 0.6rem;
   border-bottom: 1px solid #f3f4f6;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 8px;
+}
+
+/* optional — smoother scroll */
+.tableWrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.tableWrapper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+}
+
+.tableWrapper::-webkit-scrollbar-track {
+  background: transparent;
 }
