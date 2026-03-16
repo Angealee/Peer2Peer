@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import styles from "./links.module.css";
 
 interface Section { id: number; name: string; }
-interface Evaluation { id: number; title: string; sectionId: number; }
+interface Evaluation {
+  id: number;
+  title: string;
+  sections?: { sectionId: number; section: { id: number; name: string } }[];
+}
 interface Student { id: number; name: string; email: string; studentId: string; }
 interface StudentLink { student: Student; link: string; nonce: string; }
 
@@ -55,14 +59,21 @@ export default function GenerateLinksPage() {
   }, []);
 
   useEffect(() => {
-    if (selectedSection === "") {
-      setFilteredEvals(evaluations);
-    } else {
-      setFilteredEvals(evaluations.filter((e) => e.sectionId === Number(selectedSection)));
-    }
-    setSelectedEval("");
-    setStudentLinks([]);
-  }, [selectedSection, evaluations]);
+  if (selectedSection === "") {
+    setFilteredEvals(evaluations);
+  } else {
+    setFilteredEvals(
+      evaluations.filter((e) =>
+        e.sections?.some(
+          (s) => s.sectionId === Number(selectedSection)
+        )
+      )
+    );
+  }
+
+  setSelectedEval("");
+  setStudentLinks([]);
+}, [selectedSection, evaluations]);
 
   useEffect(() => {
     if (selectedSection === "") { setStudents([]); setStudentLinks([]); return; }
