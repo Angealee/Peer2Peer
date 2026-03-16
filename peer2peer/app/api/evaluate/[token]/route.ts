@@ -32,7 +32,15 @@ export async function GET(
     where: { id: evaluationId },
     include: {
       criteria: true,
-      section: { include: { students: true } },
+      sections: {
+        include: {
+          section: {
+            include: {
+              students: true,
+            },
+          },
+        },
+      },
     },
   });
 
@@ -40,12 +48,16 @@ export async function GET(
     return NextResponse.json({ error: "Evaluation not found" }, { status: 404 });
   }
 
-  const student = evaluation.section.students.find((s) => s.id === studentId);
+  const allStudents = evaluation.sections.flatMap((es) =>
+  es.section.students
+);
+
+  const student = allStudents.find((s) => s.id === studentId);
   if (!student) {
     return NextResponse.json({ error: "You are not part of this evaluation" }, { status: 403 });
   }
 
-  const peers = evaluation.section.students.filter((s) => s.id !== studentId);
+  const peers = allStudents.filter((s) => s.id !== studentId);
 
   const existingResponse = await prisma.evaluationResponse.findFirst({
     where: { evaluationId, evaluatorStudentId: studentId },
