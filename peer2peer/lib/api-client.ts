@@ -112,9 +112,14 @@ export const api = {
         body: JSON.stringify({ evaluatorId, responses }),
       }),
 
-    results: (id: number) => request<EvaluationResults>(`/evaluations/${id}/results`),
-  },
-};
+    results: (id: number, sectionId?: number) =>
+        request<EvaluationResults>(
+          `/evaluations/${id}/results${
+            sectionId ? `?sectionId=${sectionId}` : ""
+          }`
+        ),
+        },
+      };
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
 

@@ -22,6 +22,10 @@ export async function GET(
     const { id } = await params;
     const evaluationId = parseInt(id);
 
+    const sectionId = Number(
+      new URL(req.url).searchParams.get("sectionId")
+    );
+
     const evaluation = await prisma.evaluation.findUnique({
       where: { id: evaluationId },
       include: {
@@ -56,10 +60,20 @@ export async function GET(
 
     const isAnonymous = evaluation.anonymous;
 
-    // ✅ collect all students from all sections
-    const allStudents = evaluation.sections.flatMap(
-      (es) => es.section.students
-    );
+    // ✅ filter students by section
+    let students: any[] = [];
+
+    if (sectionId) {
+      const section = evaluation.sections.find(
+        (es) => es.section.id === sectionId
+      );
+
+      students = section?.section.students ?? [];
+    } else {
+      students = evaluation.sections.flatMap(
+        (es) => es.section.students
+      );
+    }
 
     const studentMap = new Map<
       number,
@@ -77,7 +91,7 @@ export async function GET(
       }
     >();
 
-    for (const student of allStudents) {
+    for (const student of students) {
       studentMap.set(student.id, {
         student: {
           id: student.id,
