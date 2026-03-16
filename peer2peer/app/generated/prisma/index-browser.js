@@ -150,7 +150,6 @@ exports.Prisma.EvaluationScalarFieldEnum = {
   description: 'description',
   deadline: 'deadline',
   anonymous: 'anonymous',
-  sectionId: 'sectionId',
   createdBy: 'createdBy',
   createdAt: 'createdAt'
 };
@@ -170,6 +169,12 @@ exports.Prisma.EvaluationResponseScalarFieldEnum = {
   criterionId: 'criterionId',
   score: 'score',
   comment: 'comment'
+};
+
+exports.Prisma.EvaluationSectionScalarFieldEnum = {
+  id: 'id',
+  evaluationId: 'evaluationId',
+  sectionId: 'sectionId'
 };
 
 exports.Prisma.SortOrder = {
@@ -194,7 +199,8 @@ exports.Prisma.ModelName = {
   Student: 'Student',
   Evaluation: 'Evaluation',
   EvaluationCriteria: 'EvaluationCriteria',
-  EvaluationResponse: 'EvaluationResponse'
+  EvaluationResponse: 'EvaluationResponse',
+  EvaluationSection: 'EvaluationSection'
 };
 
 /**

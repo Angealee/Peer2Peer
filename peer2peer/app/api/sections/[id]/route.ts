@@ -52,6 +52,9 @@ export async function DELETE(
     }
 
     // Delete students first (FK constraint), then section
+    await prisma.evaluationResponse.deleteMany({ where: { evaluatorStudent: { sectionId } } });
+    await prisma.evaluationResponse.deleteMany({ where: { evaluatedStudent: { sectionId } } });
+    await prisma.evaluationSection.deleteMany({ where: { sectionId } });
     await prisma.student.deleteMany({ where: { sectionId } });
     await prisma.section.delete({ where: { id: sectionId } });
 

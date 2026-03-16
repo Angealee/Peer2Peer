@@ -27,8 +27,8 @@ model Section {
   createdBy  Int
   instructor User @relation(fields: [createdBy], references: [id])
 
-  students    Student[]
-  evaluations Evaluation[]
+  students           Student[]
+  evaluationSections EvaluationSection[]
 
   createdAt DateTime @default(now())
 }
@@ -53,14 +53,12 @@ model Evaluation {
   deadline    DateTime?
   anonymous   Boolean   @default(true)
 
-  sectionId Int
-  section   Section @relation(fields: [sectionId], references: [id])
-
   createdBy  Int
   instructor User @relation(fields: [createdBy], references: [id])
 
   criteria  EvaluationCriteria[]
   responses EvaluationResponse[]
+  sections  EvaluationSection[]
 
   createdAt DateTime @default(now())
 }
@@ -87,4 +85,12 @@ model EvaluationResponse {
   criterion           EvaluationCriteria @relation(fields: [criterionId], references: [id])
   score               Int
   comment             String?
+}
+
+model EvaluationSection  {
+  id           Int        @id @default(autoincrement())
+  evaluationId Int
+  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
+  sectionId    Int
+  section      Section    @relation(fields: [sectionId], references: [id])
 }
