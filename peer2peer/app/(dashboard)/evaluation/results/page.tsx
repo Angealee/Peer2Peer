@@ -51,7 +51,10 @@ export default function ResultsPage() {
     if (!results || !selectedEvalId) return;
     setExporting(true);
     try {
-      const sectionName = getSectionName(evaluations.find((e) => e.id === selectedEvalId)?.sectionId ?? 0);
+      const evalObj = evaluations.find((e) => e.id === selectedEvalId);
+      const sectionName = evalObj
+  ? getSectionName(evalObj)
+  : "Section";
       exportResultsToExcel(results, sectionName);
     } catch {
       alert("Failed to export. Please try again.");
@@ -60,7 +63,13 @@ export default function ResultsPage() {
     }
   };
 
-  const getSectionName = (id: number) => sections.find((s) => s.id === id)?.name ?? `Section #${id}`;
+  const getSectionName = (evaluation: Evaluation) => {
+  if (!evaluation.sections?.length) return "No section";
+
+  const first = evaluation.sections[0]?.section;
+
+  return first?.name ?? `Section #${first?.id ?? 0}`;
+};
 
   if (loading) return <div className={styles.container}><p className={styles.loadingText}>Loading...</p></div>;
   if (error) return <div className={styles.container}><p className={styles.errorText}>{error}</p></div>;
@@ -227,7 +236,7 @@ export default function ResultsPage() {
                     display: "flex", flexDirection: "column", gap: "3px",
                     fontSize: "0.78rem", color: isSelected ? "rgba(255,255,255,0.6)" : "#64748b",
                   }}>
-                    <span>📁 {getSectionName(ev.sectionId)}</span>
+                    <span>📁 {getSectionName(ev)}</span>
                     {ev.deadline && <span>📅 Due {new Date(ev.deadline).toLocaleDateString()}</span>}
                     {ev.anonymous && <span>🔒 Anonymous</span>}
                   </div>
@@ -253,7 +262,7 @@ export default function ResultsPage() {
                     {selectedEval?.title}
                   </div>
                   <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.78rem", marginTop: "2px" }}>
-                    {getSectionName(selectedEval?.sectionId ?? 0)} · Click a student row to view comments
+                    {selectedEval ? getSectionName(selectedEval) : ""} · Click a student row to view comments
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: "8px" }}>
