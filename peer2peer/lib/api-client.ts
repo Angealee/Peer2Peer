@@ -138,11 +138,11 @@ export type Evaluation = {
   id: number;
   title: string;
   description?: string;
-  sectionId: number;
   deadline?: string | null;
   anonymous?: boolean;
   createdAt?: string;
-  criteria?: { id: number; criterionName: string }[];
+  criteria?: { id: number; criterionName: string; scoreOptions?: string }[];
+  sections?: { sectionId: number; section: { id: number; name: string } }[];
 };
 
 export interface EvaluationResults {

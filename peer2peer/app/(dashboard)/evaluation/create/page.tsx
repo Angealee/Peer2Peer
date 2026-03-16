@@ -21,7 +21,8 @@ export default function CreateEvaluationPage() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedSectionId, setSelectedSectionId] = useState("");
+  // ← CHANGED: array instead of single string
+  const [selectedSectionIds, setSelectedSectionIds] = useState<number[]>([]);
   const [deadline, setDeadline] = useState("");
   const [anonymous, setAnonymous] = useState(true);
   const [criteria, setCriteria] = useState<CriterionDef[]>([
@@ -48,13 +49,19 @@ export default function CreateEvaluationPage() {
     api.evaluations.list().then(setEvaluations).catch(() => {}).finally(() => setEvalsLoading(false));
   }, []);
 
+  // ← NEW: toggle section checkbox
+  const toggleSection = (id: number) => {
+    setSelectedSectionIds((prev) =>
+      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+    );
+  };
+
   // ── Criterion handlers ─────────────────────────────────────────────────────
   const addCriterion = () => setCriteria((p) => [...p, { name: "", scoreOptions: [...DEFAULT_SCORE_OPTIONS] }]);
   const removeCriterion = (i: number) => setCriteria((p) => p.filter((_, idx) => idx !== i));
   const changeCriterionName = (i: number, v: string) =>
     setCriteria((p) => p.map((c, idx) => idx === i ? { ...c, name: v } : c));
 
-  // ── Score option handlers ─────────────────────────────────────────────────
   const addScoreOption = (ci: number) =>
     setCriteria((p) => p.map((c, idx) => {
       if (idx !== ci) return c;
@@ -79,7 +86,7 @@ export default function CreateEvaluationPage() {
 
   // ── Reset form ─────────────────────────────────────────────────────────────
   const resetForm = () => {
-    setTitle(""); setDescription(""); setSelectedSectionId("");
+    setTitle(""); setDescription(""); setSelectedSectionIds([]);
     setDeadline(""); setAnonymous(true);
     setCriteria([
       { name: "", scoreOptions: [...DEFAULT_SCORE_OPTIONS] },
@@ -94,7 +101,9 @@ export default function CreateEvaluationPage() {
     setEditingId(ev.id);
     setTitle(ev.title);
     setDescription(ev.description ?? "");
-    setSelectedSectionId(String(ev.sectionId));
+    // ← CHANGED: load section IDs array from ev.sections
+    const sectionIds = ev.sections?.map((es: any) => es.sectionId ?? es.section?.id).filter(Boolean) ?? [];
+    setSelectedSectionIds(sectionIds);
     setDeadline(ev.deadline ? String(ev.deadline).slice(0, 16) : "");
     setAnonymous(ev.anonymous ?? true);
     setCriteria(
@@ -119,7 +128,8 @@ export default function CreateEvaluationPage() {
       .filter((c) => c.name.trim())
       .map((c) => ({ name: c.name.trim(), scoreOptions: c.scoreOptions }));
     if (!title.trim()) { setError("Title is required."); return; }
-    if (!selectedSectionId) { setError("Please select a section."); return; }
+    // ← CHANGED: check array length
+    if (selectedSectionIds.length === 0) { setError("Select at least one section."); return; }
     if (cleanCriteria.length === 0) { setError("Add at least one criterion."); return; }
     for (const c of cleanCriteria) {
       if (c.scoreOptions.length < 2) { setError(`"${c.name}" needs at least 2 score options.`); return; }
@@ -129,7 +139,8 @@ export default function CreateEvaluationPage() {
     try {
       const payload = {
         title: title.trim(), description: description.trim(),
-        sectionId: Number(selectedSectionId),
+        // ← CHANGED: sectionIds array instead of sectionId
+        sectionIds: selectedSectionIds,
         deadline: deadline || undefined, anonymous,
         criteria: cleanCriteria.map((c) => c.name),
         scoreOptions: cleanCriteria.map((c) => c.scoreOptions),
@@ -178,8 +189,18 @@ export default function CreateEvaluationPage() {
     finally { setDeletingId(null); setConfirmId(null); }
   };
 
-  const selectedSection = sections.find((s) => s.id === Number(selectedSectionId));
-  const getSectionName = (id: number) => sections.find((s) => s.id === id)?.name ?? `Section #${id}`;
+  // ← CHANGED: get section names from ev.sections array
+  const getSectionNames = (ev: Evaluation) => {
+    if (ev.sections && ev.sections.length > 0) {
+      return ev.sections.map((es: any) => es.section?.name ?? `#${es.sectionId}`).join(", ");
+    }
+    return "—";
+  };
+
+  const totalStudents = selectedSectionIds.reduce((sum, id) => {
+    const sec = sections.find((s) => s.id === id);
+    return sum + (sec?._count?.students ?? 0);
+  }, 0);
 
   return (
     <div className={styles.container}>
@@ -245,14 +266,9 @@ export default function CreateEvaluationPage() {
                 justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem",
               }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 700, color: "#0f172a", fontSize: "0.95rem" }}>
-                    {ev.title}
-                  </div>
-                  <div style={{
-                    fontSize: "0.78rem", color: "#64748b", marginTop: "4px",
-                    display: "flex", gap: "12px", flexWrap: "wrap",
-                  }}>
-                    <span>📁 {getSectionName(ev.sectionId)}</span>
+                  <div style={{ fontWeight: 700, color: "#0f172a", fontSize: "0.95rem" }}>{ev.title}</div>
+                  <div style={{ fontSize: "0.78rem", color: "#64748b", marginTop: "4px", display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                    <span>📁 {getSectionNames(ev)}</span>
                     {ev.deadline && <span>📅 {new Date(ev.deadline).toLocaleDateString()}</span>}
                     <span>{ev.anonymous ? "🔒 Anonymous" : "👁 Not Anonymous"}</span>
                   </div>
@@ -288,7 +304,7 @@ export default function CreateEvaluationPage() {
             padding: "10px 14px", fontSize: "0.85rem", color: "#92400e", marginBottom: "1rem",
             display: "flex", justifyContent: "space-between", alignItems: "center",
           }}>
-            <span>✏️ Editing — section cannot be changed  <strong>Saving will delete all existing student responses.</strong></span>
+            <span>✏️ Editing — <strong>Saving will delete all existing student responses.</strong></span>
             <button type="button" onClick={resetForm} style={{
               background: "none", border: "none", cursor: "pointer", color: "#92400e", fontWeight: 700,
             }}>✕ Cancel</button>
@@ -307,36 +323,69 @@ export default function CreateEvaluationPage() {
             value={description} onChange={(e) => setDescription(e.target.value)} disabled={loading} />
         </div>
 
+        {/* ← CHANGED: multi-section checkboxes */}
         <div className={styles.formGroup}>
-          <label>Select Section</label>
+          <label>Select Sections
+            <span style={{ fontWeight: 400, fontSize: "0.8rem", color: "#94a3b8", textTransform: "none", marginLeft: "6px" }}>
+              (select one or more)
+            </span>
+          </label>
           {editingId ? (
             <div style={{
               padding: "11px 14px", borderRadius: "8px", border: "1.5px solid #e2e8f0",
               background: "#f8fafc", fontSize: "0.93rem", color: "#64748b",
             }}>
-              📁 {getSectionName(Number(selectedSectionId))}
+              📁 {sections.filter(s => selectedSectionIds.includes(s.id)).map(s => s.name).join(", ") || "—"}
               <span style={{ marginLeft: "8px", fontSize: "0.75rem", color: "#94a3b8" }}>
                 (cannot be changed while editing)
               </span>
             </div>
+          ) : sectionsLoading ? (
+            <p style={{ color: "#94a3b8", fontSize: "0.875rem" }}>Loading sections...</p>
+          ) : sections.length === 0 ? (
+            <p style={{ color: "#f87171", fontSize: "0.875rem" }}>No sections found. Create one first.</p>
           ) : (
-            <select value={selectedSectionId} onChange={(e) => setSelectedSectionId(e.target.value)}
-              disabled={loading || sectionsLoading} required>
-              <option value="">{sectionsLoading ? "Loading..." : "— Select a Section —"}</option>
-              {sections.map((s) => (
-                <option key={s.id} value={s.id}>{s.name} ({s._count?.students ?? 0} students)</option>
-              ))}
-            </select>
+            <div style={{
+              display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+              gap: "8px", marginTop: "4px",
+            }}>
+              {sections.map((s) => {
+                const isChecked = selectedSectionIds.includes(s.id);
+                return (
+                  <label key={s.id} style={{
+                    display: "flex", alignItems: "center", gap: "10px",
+                    padding: "10px 14px", borderRadius: "8px", cursor: "pointer",
+                    border: isChecked ? "2px solid rgb(29,207,216)" : "1.5px solid #e2e8f0",
+                    background: isChecked ? "rgba(29,207,216,0.05)" : "#f8fafc",
+                    transition: "all 0.15s ease",
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => toggleSection(s.id)}
+                      disabled={loading}
+                      style={{ accentColor: "rgb(20,184,166)", width: 16, height: 16 }}
+                    />
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: "0.875rem", color: "#0f172a" }}>{s.name}</div>
+                      <div style={{ fontSize: "0.75rem", color: "#64748b" }}>
+                        {s._count?.students ?? 0} students
+                      </div>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
           )}
-          {selectedSection && !editingId && (
-            <span style={{
+          {selectedSectionIds.length > 0 && !editingId && (
+            <div style={{
               marginTop: "8px", display: "inline-flex", alignItems: "center", gap: "6px",
               background: "rgba(29,207,216,0.1)", border: "1px solid rgba(29,207,216,0.3)",
               borderRadius: "99px", padding: "3px 12px", fontSize: "0.8rem",
-              color: "rgb(20,184,166)", fontWeight: 600, width: "fit-content",
+              color: "rgb(20,184,166)", fontWeight: 600,
             }}>
-              👥 {selectedSection._count?.students ?? 0} students will be evaluated
-            </span>
+              👥 {totalStudents} students across {selectedSectionIds.length} section{selectedSectionIds.length !== 1 ? "s" : ""}
+            </div>
           )}
         </div>
 
@@ -365,7 +414,6 @@ export default function CreateEvaluationPage() {
               marginBottom: "10px", overflow: "hidden",
               background: expandedCriterion === ci ? "#fafcff" : "white",
             }}>
-              {/* Criterion name row */}
               <div style={{ display: "flex", gap: "8px", alignItems: "center", padding: "10px 12px" }}>
                 <input
                   type="text"
@@ -398,70 +446,43 @@ export default function CreateEvaluationPage() {
                 )}
               </div>
 
-              {/* Score options panel */}
               {expandedCriterion === ci && (
-                <div style={{
-                  borderTop: "1px solid #e2e8f0", padding: "14px 12px",
-                  background: "#f8faff",
-                }}>
+                <div style={{ borderTop: "1px solid #e2e8f0", padding: "14px 12px", background: "#f8faff" }}>
                   <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#475569", marginBottom: "10px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                     Score Options — students will see these as buttons
                   </div>
-
-                  {/* Preview */}
                   <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "12px" }}>
                     {criterion.scoreOptions.map((opt, si) => (
                       <div key={si} style={{
                         background: "#eff6ff", border: "1.5px solid #2563eb",
                         borderRadius: "8px", padding: "4px 10px",
                         fontSize: "12px", fontWeight: 700, color: "#2563eb",
-                        display: "flex", alignItems: "center", gap: "4px",
                       }}>
                         {opt.value}{opt.label ? ` · ${opt.label}` : ""}
                       </div>
                     ))}
                   </div>
-
-                  {/* Edit each option */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                     {criterion.scoreOptions.map((opt, si) => (
                       <div key={si} style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                        <input
-                          type="number"
-                          value={opt.value}
+                        <input type="number" value={opt.value}
                           onChange={(e) => changeScoreOption(ci, si, "value", e.target.value)}
-                          style={{
-                            width: "60px", padding: "6px 8px", borderRadius: "6px",
-                            border: "1px solid #e2e8f0", fontSize: "13px", textAlign: "center",
-                          }}
-                          placeholder="Val"
-                        />
-                        <input
-                          type="text"
-                          value={opt.label}
+                          style={{ width: "60px", padding: "6px 8px", borderRadius: "6px", border: "1px solid #e2e8f0", fontSize: "13px", textAlign: "center" }}
+                          placeholder="Val" />
+                        <input type="text" value={opt.label}
                           onChange={(e) => changeScoreOption(ci, si, "label", e.target.value)}
-                          style={{
-                            flex: 1, padding: "6px 10px", borderRadius: "6px",
-                            border: "1px solid #e2e8f0", fontSize: "13px",
-                          }}
-                          placeholder="Label (e.g. Poor, Good, Excellent)"
-                        />
+                          style={{ flex: 1, padding: "6px 10px", borderRadius: "6px", border: "1px solid #e2e8f0", fontSize: "13px" }}
+                          placeholder="Label (e.g. Poor, Good, Excellent)" />
                         <button type="button" onClick={() => removeScoreOption(ci, si)}
                           disabled={criterion.scoreOptions.length <= 2}
-                          style={{
-                            padding: "5px 10px", borderRadius: "6px",
-                            border: "1px solid #fca5a5", background: "white",
-                            color: "#ef4444", fontSize: "12px", cursor: "pointer",
-                          }}>✕</button>
+                          style={{ padding: "5px 10px", borderRadius: "6px", border: "1px solid #fca5a5", background: "white", color: "#ef4444", fontSize: "12px", cursor: "pointer" }}>✕</button>
                       </div>
                     ))}
                   </div>
-
                   <div style={{ display: "flex", gap: "8px", marginTop: "10px" }}>
                     <button type="button" onClick={() => addScoreOption(ci)} style={{
                       padding: "6px 14px", borderRadius: "6px", border: "1px solid #e2e8f0",
-                      background: "white", color: "#374151", fontSize: "12px",
-                      fontWeight: 600, cursor: "pointer",
+                      background: "white", color: "#374151", fontSize: "12px", fontWeight: 600, cursor: "pointer",
                     }}>+ Add Option</button>
                     <button type="button" onClick={() =>
                       setCriteria((p) => p.map((c, idx) =>
