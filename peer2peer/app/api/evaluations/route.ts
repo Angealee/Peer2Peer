@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const evaluations = await prisma.evaluation.findMany({
       where: { createdBy: user.id },
       include: {
-        section: { select: { name: true } },
+        sections: { include: { section: true } },
         criteria: true,
         _count: { select: { responses: true } },
       },
@@ -26,36 +26,41 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const user = requireAdmin(req);
-    const { title, description, sectionId, criteria, scoreOptions, deadline, anonymous } = await req.json();
+    const { title, description, sectionIds, criteria, scoreOptions, deadline, anonymous } = await req.json();
 
-    if (!title || !sectionId) {
-      return NextResponse.json({ error: "title and sectionId are required" }, { status: 400 });
+    if (!title || !sectionIds || !Array.isArray(sectionIds) || sectionIds.length === 0) {
+      return NextResponse.json({ error: "title and at least one sectionId are required" }, { status: 400 });
     }
 
-    const section = await prisma.section.findFirst({
-      where: { id: Number(sectionId), createdBy: user.id },
+    // Verify all sections belong to this instructor
+    const sections = await prisma.section.findMany({
+      where: { id: { in: sectionIds.map(Number) }, createdBy: user.id },
     });
-    if (!section) return NextResponse.json({ error: "Section not found" }, { status: 404 });
+    if (sections.length !== sectionIds.length) {
+      return NextResponse.json({ error: "One or more sections not found" }, { status: 404 });
+    }
 
     const evaluation = await prisma.evaluation.create({
       data: {
         title,
         description,
-        sectionId: Number(sectionId),
         createdBy: user.id,
         deadline: deadline ? new Date(deadline) : null,
         anonymous: typeof anonymous === "boolean" ? anonymous : true,
+        sections: {
+          create: sectionIds.map((id: number) => ({ sectionId: Number(id) })),
+        },
         criteria: {
           create: (criteria as string[]).map((name: string, i: number) => ({
             criterionName: name,
-            // Store scoreOptions as JSON string if provided
-            scoreOptions: scoreOptions?.[i]
-              ? JSON.stringify(scoreOptions[i])
-              : null,
+            scoreOptions: scoreOptions?.[i] ? JSON.stringify(scoreOptions[i]) : null,
           })),
         },
       },
-      include: { criteria: true },
+      include: {
+        sections: { include: { section: true } },
+        criteria: true,
+      },
     });
 
     return NextResponse.json(evaluation, { status: 201 });
