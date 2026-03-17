@@ -1,4 +1,5 @@
 // app/api/evaluations/[id]/results/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
@@ -8,7 +9,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const token = req.headers.get("authorization")?.split(" ")[1];
+    const token =
+      req.headers.get("authorization")?.split(" ")[1];
 
     if (!token) {
       return NextResponse.json(
@@ -17,7 +19,12 @@ export async function GET(
       );
     }
 
-    verifyToken(token);
+    // ✅ get user from token
+    const user = verifyToken(token) as {
+      id: number;
+      email: string;
+      role: string;
+    };
 
     const { id } = await params;
     const evaluationId = parseInt(id);
@@ -26,41 +33,49 @@ export async function GET(
       new URL(req.url).searchParams.get("sectionId")
     );
 
-    const evaluation = await prisma.evaluation.findUnique({
-      where: { id: evaluationId },
-      include: {
-        criteria: true,
+    // ✅ IMPORTANT FIX
+    // check ownership FIRST
 
-        responses: {
-          include: {
-            evaluatedStudent: true,
-            evaluatorStudent: true,
-            criterion: true,
-          },
+    const evaluation =
+      await prisma.evaluation.findFirst({
+        where: {
+          id: evaluationId,
+          createdBy: user.id, // 🔴 THIS FIX PREVENTS LEAK
         },
+        include: {
+          criteria: true,
 
-        sections: {
-          include: {
-            section: {
-              include: {
-                students: true,
+          responses: {
+            include: {
+              evaluatedStudent: true,
+              evaluatorStudent: true,
+              criterion: true,
+            },
+          },
+
+          sections: {
+            include: {
+              section: {
+                include: {
+                  students: true,
+                },
               },
             },
           },
         },
-      },
-    });
+      });
 
     if (!evaluation) {
       return NextResponse.json(
-        { error: "Not found" },
-        { status: 404 }
+        { error: "Forbidden or not found" },
+        { status: 403 }
       );
     }
 
     const isAnonymous = evaluation.anonymous;
 
     // ✅ filter students by section
+
     let students: any[] = [];
 
     if (sectionId) {
@@ -83,7 +98,10 @@ export async function GET(
           name: string;
           email: string;
         };
-        scores: Map<string, { total: number; count: number }>;
+        scores: Map<
+          string,
+          { total: number; count: number }
+        >;
         comments: {
           evaluatorName: string;
           text: string;
@@ -103,7 +121,10 @@ export async function GET(
       });
     }
 
-    const commentTracker = new Map<string, boolean>();
+    const commentTracker = new Map<
+      string,
+      boolean
+    >();
 
     for (const response of evaluation.responses) {
       const entry = studentMap.get(
@@ -116,13 +137,18 @@ export async function GET(
         response.criterion.criterionName;
 
       const existing =
-        entry.scores.get(criterionName) ??
-        { total: 0, count: 0 };
+        entry.scores.get(criterionName) ?? {
+          total: 0,
+          count: 0,
+        };
 
       existing.total += response.score;
       existing.count += 1;
 
-      entry.scores.set(criterionName, existing);
+      entry.scores.set(
+        criterionName,
+        existing
+      );
 
       const commentKey =
         `${response.evaluatorStudentId}-${response.evaluatedStudentId}`;
@@ -145,37 +171,43 @@ export async function GET(
 
     const results = Array.from(
       studentMap.values()
-    ).map(({ student, scores, comments }) => {
-      const scoreArray = Array.from(
-        scores.entries()
-      ).map(([criterion, { total, count }]) => ({
-        criterion,
-        average:
-          count > 0
-            ? Math.round((total / count) * 100) / 100
-            : 0,
-        count,
-      }));
+    ).map(
+      ({ student, scores, comments }) => {
+        const scoreArray = Array.from(
+          scores.entries()
+        ).map(
+          ([criterion, { total, count }]) => ({
+            criterion,
+            average:
+              count > 0
+                ? Math.round(
+                    (total / count) * 100
+                  ) / 100
+                : 0,
+            count,
+          })
+        );
 
-      const overallAverage =
-        scoreArray.length > 0
-          ? Math.round(
-              (scoreArray.reduce(
-                (s, c) => s + c.average,
-                0
-              ) /
-                scoreArray.length) *
-                100
-            ) / 100
-          : 0;
+        const overallAverage =
+          scoreArray.length > 0
+            ? Math.round(
+                (scoreArray.reduce(
+                  (s, c) => s + c.average,
+                  0
+                ) /
+                  scoreArray.length) *
+                  100
+              ) / 100
+            : 0;
 
-      return {
-        student,
-        scores: scoreArray,
-        overallAverage,
-        comments,
-      };
-    });
+        return {
+          student,
+          scores: scoreArray,
+          overallAverage,
+          comments,
+        };
+      }
+    );
 
     return NextResponse.json({
       evaluationId,
