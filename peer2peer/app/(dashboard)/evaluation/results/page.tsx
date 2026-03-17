@@ -27,28 +27,42 @@ export default function ResultsPage() {
   const [selectedEvalId, setSelectedEvalId] = useState<number | null>(null);
   const [results, setResults] = useState<EvaluationResults | null>(null);
   const [resultsLoading, setResultsLoading] = useState(false);
-  const [modalStudent, setModalStudent] = useState<StudentResult | null>(null);
+
+  const [modalStudent, setModalStudent] =
+    useState<StudentResult | null>(null);
+
   const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
-    Promise.all([api.sections.list(), api.evaluations.list()])
+    Promise.all([
+      api.sections.list(),
+      api.evaluations.list(),
+    ])
       .then(([secs, evals]) => {
         setSections(secs);
         setEvaluations(evals);
       })
-      .catch(() => setError("Failed to load data."))
+      .catch(() =>
+        setError("Failed to load data.")
+      )
       .finally(() => setLoading(false));
   }, []);
 
-  const getSectionName = (evaluation?: Evaluation) => {
-    if (!evaluation?.sections?.length) return "No section";
+  const getSectionName = (
+    evaluation?: Evaluation
+  ) => {
+    if (!evaluation?.sections?.length)
+      return "No section";
 
-    const first = evaluation.sections[0]?.section;
+    const first =
+      evaluation.sections[0]?.section;
 
     return first?.name ?? "No section";
   };
 
-  const handleSelectEval = async (evalId: number) => {
+  const handleSelectEval = async (
+    evalId: number
+  ) => {
     if (selectedEvalId === evalId) {
       setSelectedEvalId(null);
       setResults(null);
@@ -60,10 +74,14 @@ export default function ResultsPage() {
     setResultsLoading(true);
 
     try {
-      const evalObj = evaluations.find(e => e.id === evalId);
+      const evalObj =
+        evaluations.find(
+          e => e.id === evalId
+        );
 
       const sectionId =
-        evalObj?.sections?.[0]?.section?.id;
+        evalObj?.sections?.[0]?.section
+          ?.id;
 
       setResults(
         await api.evaluations.results(
@@ -71,7 +89,6 @@ export default function ResultsPage() {
           sectionId
         )
       );
-
     } catch {
       setResults(null);
     } finally {
@@ -80,19 +97,25 @@ export default function ResultsPage() {
   };
 
   const handleExport = async () => {
-    if (!results || !selectedEvalId) return;
+    if (!results || !selectedEvalId)
+      return;
 
     setExporting(true);
 
     try {
       const evalObj =
-        evaluations.find(e => e.id === selectedEvalId);
+        evaluations.find(
+          e =>
+            e.id === selectedEvalId
+        );
 
       const sectionName =
         getSectionName(evalObj);
 
-      exportResultsToExcel(results, sectionName);
-
+      exportResultsToExcel(
+        results,
+        sectionName
+      );
     } catch {
       alert("Failed to export.");
     } finally {
@@ -103,28 +126,34 @@ export default function ResultsPage() {
   if (loading)
     return (
       <div className={styles.container}>
-        <p className={styles.loadingText}>Loading...</p>
+        <p className={styles.loadingText}>
+          Loading...
+        </p>
       </div>
     );
 
   if (error)
     return (
       <div className={styles.container}>
-        <p className={styles.errorText}>{error}</p>
+        <p className={styles.errorText}>
+          {error}
+        </p>
       </div>
     );
 
   const selectedEval =
-    evaluations.find(e => e.id === selectedEvalId);
+    evaluations.find(
+      e => e.id === selectedEvalId
+    );
 
   return (
     <div className={styles.container}>
-
       <h1 className={styles.title}>
         Evaluation Results
       </h1>
 
       {/* Evaluation cards */}
+
       <div
         style={{
           display: "grid",
@@ -142,7 +171,9 @@ export default function ResultsPage() {
             <div
               key={ev.id}
               onClick={() =>
-                handleSelectEval(ev.id)
+                handleSelectEval(
+                  ev.id
+                )
               }
               style={{
                 background: isSelected
@@ -174,7 +205,10 @@ export default function ResultsPage() {
                   color: "#64748b",
                 }}
               >
-                📁 {getSectionName(ev)}
+                📁{" "}
+                {getSectionName(
+                  ev
+                )}
 
                 {ev.deadline && (
                   <div>
@@ -198,140 +232,247 @@ export default function ResultsPage() {
 
       {/* RESULTS PANEL */}
 
-      {/* RESULTS PANEL */}
-
-{selectedEvalId && (
-
-  <div className={styles.tableCard}>
-
-    <div className={styles.resultsHeader}>
-      <div>
-        {selectedEval?.title}
-      </div>
-
-      <div
-        style={{
-          fontSize: 12,
-          opacity: 0.6,
-        }}
-      >
-        {getSectionName(
-          selectedEval
-        )}
-      </div>
-
-      {results && (
-        <button
-          onClick={handleExport}
+      {selectedEvalId && (
+        <div
+          className={
+            styles.tableCard
+          }
         >
-          Export
-        </button>
-      )}
-    </div>
+          <div
+            className={
+              styles.resultsHeader
+            }
+          >
+            <div>
+              {
+                selectedEval?.title
+              }
+            </div>
 
+            <div
+              style={{
+                fontSize: 12,
+                opacity: 0.6,
+              }}
+            >
+              {getSectionName(
+                selectedEval
+              )}
+            </div>
 
-    <div className={styles.resultsContent}>
+            {results && (
+              <button
+                onClick={
+                  handleExport
+                }
+              >
+                Export
+              </button>
+            )}
+          </div>
 
-      {resultsLoading && (
-        <p>Loading...</p>
-      )}
+          <div
+            className={
+              styles.resultsContent
+            }
+          >
+            {resultsLoading && (
+              <p>
+                Loading...
+              </p>
+            )}
 
-      {!results ||
-        results.results.length === 0 ? (
-        <p>
-          No submissions yet.
-        </p>
-      ) : (
-
-        <div className={styles.tableWrapper}>
-
-          <table className={styles.table}>
-
-            <thead>
-              <tr>
-
-                <th>Student</th>
-
-                {results.results[0]
-                  ?.scores.map(
-                    sc => (
-                      <th
-                        key={
-                          sc.criterion
-                        }
-                      >
-                        {sc.criterion}
+            {!results ||
+            results.results
+              .length === 0 ? (
+              <p>
+                No submissions yet.
+              </p>
+            ) : (
+              <div
+                className={
+                  styles.tableWrapper
+                }
+              >
+                <table
+                  className={
+                    styles.table
+                  }
+                >
+                  <thead>
+                    <tr>
+                      <th>
+                        Student
                       </th>
-                    )
-                  )}
 
-                <th>Avg</th>
-                <th>Comments</th>
+                      {results.results[0]?.scores.map(
+                        sc => (
+                          <th
+                            key={
+                              sc.criterion
+                            }
+                          >
+                            {
+                              sc.criterion
+                            }
+                          </th>
+                        )
+                      )}
 
-              </tr>
-            </thead>
+                      <th>
+                        Avg
+                      </th>
 
+                      <th>
+                        Comments
+                      </th>
+                    </tr>
+                  </thead>
 
-            <tbody>
-
-              {results.results.map(
-                r => (
-
-                  <tr
-                    key={
-                      r.student.id
-                    }
-                  >
-
-                    <td>
-                      {r.student.name}
-                    </td>
-
-                    {r.scores.map(
-                      sc => (
-                        <td
+                  <tbody>
+                    {results.results.map(
+                      r => (
+                        <tr
                           key={
-                            sc.criterion
+                            r.student
+                              .id
                           }
+                          onClick={() =>
+                            setModalStudent(
+                              r
+                            )
+                          }
+                          style={{
+                            cursor:
+                              "pointer",
+                          }}
                         >
-                          {sc.average.toFixed(
-                            2
+                          <td>
+                            {
+                              r
+                                .student
+                                .name
+                            }
+                          </td>
+
+                          {r.scores.map(
+                            sc => (
+                              <td
+                                key={
+                                  sc.criterion
+                                }
+                              >
+                                {sc.average.toFixed(
+                                  2
+                                )}
+                              </td>
+                            )
                           )}
-                        </td>
+
+                          <td>
+                            {r.overallAverage.toFixed(
+                              2
+                            )}
+                          </td>
+
+                          <td>
+                            {
+                              r
+                                .comments
+                                .length
+                            }
+                          </td>
+                        </tr>
                       )
                     )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
-                    <td>
-                      {r.overallAverage.toFixed(
-                        2
-                      )}
-                    </td>
+      {/* MODAL */}
 
-                    <td>
-                      {
-                        r.comments.length
-                      }
-                    </td>
+      {modalStudent && (
 
-                  </tr>
+  <div
+    className={styles.modalOverlay}
+    onClick={() => setModalStudent(null)}
+  >
 
-                )
-              )}
+    <div
+      className={styles.modal}
+      onClick={(e) => e.stopPropagation()}
+    >
 
-            </tbody>
+      {/* HEADER */}
 
-          </table>
+      <div className={styles.modalHeader}>
+
+        <div>
+
+          <div className={styles.modalTitle}>
+            Student Comments
+          </div>
+
+          <div className={styles.modalSubtitle}>
+            {modalStudent.student.name}
+          </div>
 
         </div>
 
-      )}
+        <button
+          className={styles.modalClose}
+          onClick={() => setModalStudent(null)}
+        >
+          ✕
+        </button>
+
+      </div>
+
+
+      {/* BODY */}
+
+      <div className={styles.modalBody}>
+
+        {modalStudent.comments.length === 0 ? (
+
+          <div className={styles.noComments}>
+            No comments submitted.
+          </div>
+
+        ) : (
+
+          modalStudent.comments.map((c, i) => (
+
+            <div
+              key={i}
+              className={styles.commentCard}
+            >
+
+              <div className={styles.commentAuthor}>
+                {c.evaluatorName}
+              </div>
+
+              <div className={styles.commentText}>
+                {c.text}
+              </div>
+
+            </div>
+
+          ))
+
+        )}
+
+      </div>
 
     </div>
 
   </div>
 
 )}
-
     </div>
   );
 }

@@ -1,4 +1,5 @@
 // app/api/evaluations/[id]/submit/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
@@ -12,29 +13,42 @@ export async function POST(
 
     const { evaluatorId, responses } = await req.json();
 
-    if (!evaluatorId || !Array.isArray(responses) || responses.length === 0) {
+    if (
+      !evaluatorId ||
+      !Array.isArray(responses) ||
+      responses.length === 0
+    ) {
       return NextResponse.json(
-        { error: "evaluatorId and responses array are required" },
+        {
+          error:
+            "evaluatorId and responses array are required",
+        },
         { status: 400 }
       );
     }
 
-    // ✅ load evaluation with sections
-    const evaluation = await prisma.evaluation.findUnique({
-      where: { id: evaluationId },
-      include: {
-        sections: {
-          include: {
-            section: {
-              include: {
-                students: true,
+    // ─────────────────────────────
+    // Load evaluation
+    // ─────────────────────────────
+
+    const evaluation =
+      await prisma.evaluation.findUnique({
+        where: { id: evaluationId },
+
+        include: {
+          sections: {
+            include: {
+              section: {
+                include: {
+                  students: true,
+                },
               },
             },
           },
+
+          criteria: true,
         },
-        criteria: true,
-      },
-    });
+      });
 
     if (!evaluation) {
       return NextResponse.json(
@@ -43,34 +57,50 @@ export async function POST(
       );
     }
 
-    // ✅ find which section evaluator belongs to
-    let studentSection = null;
+    // ─────────────────────────────
+    // Find evaluator section
+    // ─────────────────────────────
+
+    let studentSection: any = null;
 
     for (const es of evaluation.sections) {
-      const found = es.section.students.find(
-        (s) => s.id === evaluatorId
-      );
+      const found =
+        es.section.students.find(
+          (s) =>
+            s.id === evaluatorId
+        );
 
       if (found) {
-        studentSection = es.section;
+        studentSection =
+          es.section;
         break;
       }
     }
 
     if (!studentSection) {
       return NextResponse.json(
-        { error: "Not a member of this evaluation" },
+        {
+          error:
+            "Not a member of this evaluation",
+        },
         { status: 403 }
       );
     }
 
-    // ✅ prevent double submit
-    const already = await prisma.evaluationResponse.findFirst({
-      where: {
-        evaluationId,
-        evaluatorStudentId: evaluatorId,
-      },
-    });
+    // ─────────────────────────────
+    // Prevent double submit
+    // ─────────────────────────────
+
+    const already =
+      await prisma.evaluationResponse.findFirst(
+        {
+          where: {
+            evaluationId,
+            evaluatorStudentId:
+              evaluatorId,
+          },
+        }
+      );
 
     if (already) {
       return NextResponse.json(
@@ -79,13 +109,20 @@ export async function POST(
       );
     }
 
-    // ✅ ensure evaluated students are in same section
-    const allowedIds = studentSection.students.map(
-      (s) => s.id
-    );
+    // ─────────────────────────────
+    // Allowed students
+    // ─────────────────────────────
 
-    // ✅ save responses
-    await Promise.all(
+    const allowedIds =
+      studentSection.students.map(
+        (s: any) => s.id
+      );
+
+    // ─────────────────────────────
+    // Validate responses
+    // ─────────────────────────────
+
+    const validResponses =
       responses.map(
         ({
           evaluatedId,
@@ -98,28 +135,45 @@ export async function POST(
           score: number;
           comment?: string;
         }) => {
-          if (!allowedIds.includes(evaluatedId)) {
+          if (
+            !allowedIds.includes(
+              evaluatedId
+            )
+          ) {
             throw new Error(
               "Cannot evaluate student outside your section"
             );
           }
 
-          return prisma.evaluationResponse.create({
-            data: {
-              evaluationId,
-              evaluatorStudentId: evaluatorId,
-              evaluatedStudentId: evaluatedId,
-              criterionId,
-              score,
-              comment: comment ?? null,
-            },
-          });
+          return {
+            evaluationId,
+            evaluatorStudentId:
+              evaluatorId,
+            evaluatedStudentId:
+              evaluatedId,
+            criterionId,
+            score,
+            comment:
+              comment ?? null,
+          };
         }
-      )
+      );
+
+    // ─────────────────────────────
+    // ✅ FAST INSERT (FIX)
+    // ─────────────────────────────
+
+    await prisma.evaluationResponse.createMany(
+      {
+        data: validResponses,
+      }
     );
 
+    // ─────────────────────────────
+
     return NextResponse.json({
-      message: "Submitted successfully",
+      message:
+        "Submitted successfully",
     });
   } catch (err) {
     console.error(
@@ -128,7 +182,10 @@ export async function POST(
     );
 
     return NextResponse.json(
-      { error: "Internal server error" },
+      {
+        error:
+          "Internal server error",
+      },
       { status: 500 }
     );
   }
