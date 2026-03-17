@@ -24,9 +24,17 @@ export default function ResultsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const [selectedEvalId, setSelectedEvalId] = useState<number | null>(null);
-  const [results, setResults] = useState<EvaluationResults | null>(null);
-  const [resultsLoading, setResultsLoading] = useState(false);
+  const [selectedEvalId, setSelectedEvalId] =
+    useState<number | null>(null);
+
+  const [selectedSectionId, setSelectedSectionId] =
+    useState<number | null>(null);
+
+  const [results, setResults] =
+    useState<EvaluationResults | null>(null);
+
+  const [resultsLoading, setResultsLoading] =
+    useState(false);
 
   const [modalStudent, setModalStudent] =
     useState<StudentResult | null>(null);
@@ -60,29 +68,30 @@ export default function ResultsPage() {
     return first?.name ?? "No section";
   };
 
-  const handleSelectEval = async (
+  const handleSelectEval = (
     evalId: number
   ) => {
     if (selectedEvalId === evalId) {
       setSelectedEvalId(null);
+      setSelectedSectionId(null);
       setResults(null);
       return;
     }
 
     setSelectedEvalId(evalId);
+    setSelectedSectionId(null);
+    setResults(null);
+  };
+
+  const handleSelectSection = async (
+    evalId: number,
+    sectionId: number
+  ) => {
+    setSelectedSectionId(sectionId);
     setResults(null);
     setResultsLoading(true);
 
     try {
-      const evalObj =
-        evaluations.find(
-          e => e.id === evalId
-        );
-
-      const sectionId =
-        evalObj?.sections?.[0]?.section
-          ?.id;
-
       setResults(
         await api.evaluations.results(
           evalId,
@@ -97,24 +106,14 @@ export default function ResultsPage() {
   };
 
   const handleExport = async () => {
-    if (!results || !selectedEvalId)
-      return;
+    if (!results) return;
 
     setExporting(true);
 
     try {
-      const evalObj =
-        evaluations.find(
-          e =>
-            e.id === selectedEvalId
-        );
-
-      const sectionName =
-        getSectionName(evalObj);
-
       exportResultsToExcel(
         results,
-        sectionName
+        "Results"
       );
     } catch {
       alert("Failed to export.");
@@ -152,7 +151,7 @@ export default function ResultsPage() {
         Evaluation Results
       </h1>
 
-      {/* Evaluation cards */}
+      {/* EVALUATION CARDS */}
 
       <div
         style={{
@@ -205,10 +204,7 @@ export default function ResultsPage() {
                   color: "#64748b",
                 }}
               >
-                📁{" "}
-                {getSectionName(
-                  ev
-                )}
+                📁 {getSectionName(ev)}
 
                 {ev.deadline && (
                   <div>
@@ -230,249 +226,328 @@ export default function ResultsPage() {
         })}
       </div>
 
-      {/* RESULTS PANEL */}
+      {/* SECTION SELECTOR */}
 
-      {selectedEvalId && (
+      {selectedEval && (
         <div
-          className={
-            styles.tableCard
-          }
+          style={{
+            marginBottom: 20,
+          }}
         >
           <div
-            className={
-              styles.resultsHeader
-            }
+            style={{
+              fontWeight: 600,
+              marginBottom: 8,
+            }}
           >
-            <div>
-              {
-                selectedEval?.title
-              }
-            </div>
-
-            <div
-              style={{
-                fontSize: 12,
-                opacity: 0.6,
-              }}
-            >
-              {getSectionName(
-                selectedEval
-              )}
-            </div>
-
-            {results && (
-              <button
-                onClick={
-                  handleExport
-                }
-              >
-                Export
-              </button>
-            )}
+            Sections
           </div>
 
           <div
-            className={
-              styles.resultsContent
-            }
+            style={{
+              display: "flex",
+              gap: 10,
+              flexWrap: "wrap",
+            }}
           >
-            {resultsLoading && (
-              <p>
-                Loading...
-              </p>
-            )}
+            {selectedEval.sections?.map(
+              s => {
+                const isSelected =
+                  selectedSectionId ===
+                  s.section.id;
 
-            {!results ||
-            results.results
-              .length === 0 ? (
-              <p>
-                No submissions yet.
-              </p>
-            ) : (
-              <div
-                className={
-                  styles.tableWrapper
-                }
-              >
-                <table
-                  className={
-                    styles.table
-                  }
-                >
-                  <thead>
-                    <tr>
-                      <th>
-                        Student
-                      </th>
-
-                      {results.results[0]?.scores.map(
-                        sc => (
-                          <th
-                            key={
-                              sc.criterion
-                            }
-                          >
-                            {
-                              sc.criterion
-                            }
-                          </th>
-                        )
-                      )}
-
-                      <th>
-                        Avg
-                      </th>
-
-                      <th>
-                        Comments
-                      </th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {results.results.map(
-                      r => (
-                        <tr
-                          key={
-                            r.student
-                              .id
-                          }
-                          onClick={() =>
-                            setModalStudent(
-                              r
-                            )
-                          }
-                          style={{
-                            cursor:
-                              "pointer",
-                          }}
-                        >
-                          <td>
-                            {
-                              r
-                                .student
-                                .name
-                            }
-                          </td>
-
-                          {r.scores.map(
-                            sc => (
-                              <td
-                                key={
-                                  sc.criterion
-                                }
-                              >
-                                {sc.average.toFixed(
-                                  2
-                                )}
-                              </td>
-                            )
-                          )}
-
-                          <td>
-                            {r.overallAverage.toFixed(
-                              2
-                            )}
-                          </td>
-
-                          <td>
-                            {
-                              r
-                                .comments
-                                .length
-                            }
-                          </td>
-                        </tr>
+                return (
+                  <div
+                    key={s.section.id}
+                    onClick={() =>
+                      handleSelectSection(
+                        selectedEval.id,
+                        s.section.id
                       )
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                    }
+                    style={{
+                      padding:
+                        "8px 14px",
+                      borderRadius: 8,
+                      cursor:
+                        "pointer",
+                      border: isSelected
+                        ? "2px solid cyan"
+                        : "1px solid #ccc",
+                      background:
+                        isSelected
+                          ? "#0f172a"
+                          : "white",
+                      color:
+                        isSelected
+                          ? "white"
+                          : "black",
+                    }}
+                  >
+                    {s.section.name}
+                  </div>
+                );
+              }
             )}
           </div>
         </div>
       )}
 
+      {/* RESULTS */}
+
+      {selectedEvalId &&
+        selectedSectionId && (
+          <div
+            className={
+              styles.tableCard
+            }
+          >
+            <div
+              className={
+                styles.resultsHeader
+              }
+            >
+              <div>
+                {
+                  selectedEval?.title
+                }
+              </div>
+
+              {results && (
+                <button
+                  onClick={
+                    handleExport
+                  }
+                >
+                  Export
+                </button>
+              )}
+            </div>
+
+            <div
+              className={
+                styles.resultsContent
+              }
+            >
+              {resultsLoading && (
+                <p>
+                  Loading...
+                </p>
+              )}
+
+              {!results ||
+              results.results
+                .length === 0 ? (
+                <p>
+                  No submissions
+                  yet.
+                </p>
+              ) : (
+                <div
+                  className={
+                    styles.tableWrapper
+                  }
+                >
+                  <table
+                    className={
+                      styles.table
+                    }
+                  >
+                    <thead>
+                      <tr>
+                        <th>
+                          Student
+                        </th>
+
+                        {results.results[0]?.scores.map(
+                          sc => (
+                            <th
+                              key={
+                                sc.criterion
+                              }
+                            >
+                              {
+                                sc.criterion
+                              }
+                            </th>
+                          )
+                        )}
+
+                        <th>
+                          Avg
+                        </th>
+
+                        <th>
+                          Comments
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {results.results.map(
+                        r => (
+                          <tr
+                            key={
+                              r
+                                .student
+                                .id
+                            }
+                            onClick={() =>
+                              setModalStudent(
+                                r
+                              )
+                            }
+                            style={{
+                              cursor:
+                                "pointer",
+                            }}
+                          >
+                            <td>
+                              {
+                                r
+                                  .student
+                                  .name
+                              }
+                            </td>
+
+                            {r.scores.map(
+                              sc => (
+                                <td
+                                  key={
+                                    sc.criterion
+                                  }
+                                >
+                                  {sc.average.toFixed(
+                                    2
+                                  )}
+                                </td>
+                              )
+                            )}
+
+                            <td>
+                              {r.overallAverage.toFixed(
+                                2
+                              )}
+                            </td>
+
+                            <td>
+                              {
+                                r
+                                  .comments
+                                  .length
+                              }
+                            </td>
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
       {/* MODAL */}
 
       {modalStudent && (
-
-  <div
-    className={styles.modalOverlay}
-    onClick={() => setModalStudent(null)}
-  >
-
-    <div
-      className={styles.modal}
-      onClick={(e) => e.stopPropagation()}
-    >
-
-      {/* HEADER */}
-
-      <div className={styles.modalHeader}>
-
-        <div>
-
-          <div className={styles.modalTitle}>
-            Student Comments
-          </div>
-
-          <div className={styles.modalSubtitle}>
-            {modalStudent.student.name}
-          </div>
-
-        </div>
-
-        <button
-          className={styles.modalClose}
-          onClick={() => setModalStudent(null)}
+        <div
+          className={
+            styles.modalOverlay
+          }
+          onClick={() =>
+            setModalStudent(
+              null
+            )
+          }
         >
-          ✕
-        </button>
-
-      </div>
-
-
-      {/* BODY */}
-
-      <div className={styles.modalBody}>
-
-        {modalStudent.comments.length === 0 ? (
-
-          <div className={styles.noComments}>
-            No comments submitted.
-          </div>
-
-        ) : (
-
-          modalStudent.comments.map((c, i) => (
-
+          <div
+            className={
+              styles.modal
+            }
+            onClick={e =>
+              e.stopPropagation()
+            }
+          >
             <div
-              key={i}
-              className={styles.commentCard}
+              className={
+                styles.modalHeader
+              }
             >
+              <div>
+                <div
+                  className={
+                    styles.modalTitle
+                  }
+                >
+                  Student Comments
+                </div>
 
-              <div className={styles.commentAuthor}>
-                {c.evaluatorName}
+                <div
+                  className={
+                    styles.modalSubtitle
+                  }
+                >
+                  {
+                    modalStudent
+                      .student
+                      .name
+                  }
+                </div>
               </div>
 
-              <div className={styles.commentText}>
-                {c.text}
-              </div>
-
+              <button
+                className={
+                  styles.modalClose
+                }
+                onClick={() =>
+                  setModalStudent(
+                    null
+                  )
+                }
+              >
+                ✕
+              </button>
             </div>
 
-          ))
+            <div
+              className={
+                styles.modalBody
+              }
+            >
+              {modalStudent
+                .comments
+                .length ===
+              0 ? (
+                <div>
+                  No comments.
+                </div>
+              ) : (
+                modalStudent.comments.map(
+                  (c, i) => (
+                    <div
+                      key={i}
+                      className={
+                        styles.commentCard
+                      }
+                    >
+                      <div>
+                        {
+                          c.evaluatorName
+                        }
+                      </div>
 
-        )}
-
-      </div>
-
-    </div>
-
-  </div>
-
-)}
+                      <div>
+                        {c.text}
+                      </div>
+                    </div>
+                  )
+                )
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
