@@ -38,8 +38,8 @@ export default function GenerateLinksPage() {
   const [resettingIds, setResettingIds] = useState<Set<number>>(new Set());
   const [allRefreshed, setAllRefreshed] = useState(false);
   const [allResetting, setAllResetting] = useState(false);
+  const [submittedIds, setSubmittedIds] = useState<Set<number>>(new Set());
 
-  // Confirm modals
   const [confirmReset, setConfirmReset] = useState<{ studentId: number; name: string } | null>(null);
   const [confirmResetAll, setConfirmResetAll] = useState(false);
 
@@ -59,21 +59,18 @@ export default function GenerateLinksPage() {
   }, []);
 
   useEffect(() => {
-  if (selectedSection === "") {
-    setFilteredEvals(evaluations);
-  } else {
-    setFilteredEvals(
-      evaluations.filter((e) =>
-        e.sections?.some(
-          (s) => s.sectionId === Number(selectedSection)
+    if (selectedSection === "") {
+      setFilteredEvals(evaluations);
+    } else {
+      setFilteredEvals(
+        evaluations.filter((e) =>
+          e.sections?.some((s) => s.sectionId === Number(selectedSection))
         )
-      )
-    );
-  }
-
-  setSelectedEval("");
-  setStudentLinks([]);
-}, [selectedSection, evaluations]);
+      );
+    }
+    setSelectedEval("");
+    setStudentLinks([]);
+  }, [selectedSection, evaluations]);
 
   useEffect(() => {
     if (selectedSection === "") { setStudents([]); setStudentLinks([]); return; }
@@ -87,7 +84,15 @@ export default function GenerateLinksPage() {
     initLinks();
   }, [selectedEval, students]);
 
-  // ── Initial link generation (no reset) ────────────────────────────────────
+  // Fetch submitted students whenever eval changes
+  useEffect(() => {
+    if (selectedEval === "") { setSubmittedIds(new Set()); return; }
+    fetch(`/api/evaluations/${selectedEval}/submissions`, { headers })
+      .then((r) => r.json())
+      .then((ids) => setSubmittedIds(new Set(Array.isArray(ids) ? ids : [])))
+      .catch(() => {});
+  }, [selectedEval]);
+
   function initLinks() {
     if (selectedEval === "" || students.length === 0) return;
     const base = window.location.origin;
@@ -97,35 +102,29 @@ export default function GenerateLinksPage() {
     }));
   }
 
-  // ── Reset ALL: delete all responses + new links ────────────────────────────
   async function resetAll() {
     if (selectedEval === "" || students.length === 0) return;
     setConfirmResetAll(false);
     setAllResetting(true);
-
     try {
-      // Reset each student's responses in parallel
       await Promise.all(
         students.map((s) =>
           fetch(`/api/evaluations/${selectedEval}/reset`, {
-            method: "POST",
-            headers,
+            method: "POST", headers,
             body: JSON.stringify({ evaluatorId: s.id }),
           })
         )
       );
-
-      // Generate fresh links for all
       const base = window.location.origin;
       setStudentLinks(students.map((s) => {
         const nonce = makeNonce();
         return { student: s, nonce, link: `${base}/evaluate/${makeToken(s.id, selectedEval, nonce)}` };
       }));
-
-      // Flash all rows
       const allIds = new Set(students.map((s) => s.id));
       setRefreshedIds(allIds);
       setAllRefreshed(true);
+      // Clear all submitted badges since responses were deleted
+      setSubmittedIds(new Set());
       setTimeout(() => { setRefreshedIds(new Set()); setAllRefreshed(false); }, 1800);
     } catch {
       alert("Failed to reset all responses. Please try again.");
@@ -134,29 +133,23 @@ export default function GenerateLinksPage() {
     }
   }
 
-  // ── Reset ONE: delete responses + new link ─────────────────────────────────
   async function resetOne(studentId: number) {
     if (selectedEval === "") return;
     setResettingIds((prev) => new Set([...prev, studentId]));
-
     try {
       await fetch(`/api/evaluations/${selectedEval}/reset`, {
-        method: "POST",
-        headers,
+        method: "POST", headers,
         body: JSON.stringify({ evaluatorId: studentId }),
       });
-
       const base = window.location.origin;
       const nonce = makeNonce();
       const newLink = `${base}/evaluate/${makeToken(studentId, selectedEval, nonce)}`;
-
       setStudentLinks((prev) =>
-        prev.map((sl) =>
-          sl.student.id === studentId ? { ...sl, nonce, link: newLink } : sl
-        )
+        prev.map((sl) => sl.student.id === studentId ? { ...sl, nonce, link: newLink } : sl)
       );
-
       setRefreshedIds((prev) => new Set([...prev, studentId]));
+      // Remove submitted badge since responses were deleted
+      setSubmittedIds((prev) => { const n = new Set(prev); n.delete(studentId); return n; });
       setTimeout(() => {
         setRefreshedIds((prev) => { const n = new Set(prev); n.delete(studentId); return n; });
       }, 1800);
@@ -181,10 +174,13 @@ export default function GenerateLinksPage() {
     setTimeout(() => setCopiedId(null), 2000);
   }
 
+  const submittedCount = studentLinks.filter(({ student }) => submittedIds.has(student.id)).length;
+  const pendingCount = studentLinks.length - submittedCount;
+
   return (
     <div className={styles.container}>
 
-      {/* ── Confirm Reset ALL Modal ── */}
+      {/* Confirm Reset ALL Modal */}
       {confirmResetAll && (
         <div style={{
           position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)",
@@ -201,29 +197,22 @@ export default function GenerateLinksPage() {
             <p style={{ color: "#64748b", fontSize: "0.9rem", marginBottom: "0.75rem", lineHeight: 1.6 }}>
               This will <strong style={{ color: "#ef4444" }}>permanently delete all submitted scores and comments</strong> from every student in this evaluation and generate fresh links for all {students.length} students.
             </p>
-            <p style={{ color: "#94a3b8", fontSize: "0.82rem", marginBottom: "1.5rem" }}>
-              This cannot be undone.
-            </p>
+            <p style={{ color: "#94a3b8", fontSize: "0.82rem", marginBottom: "1.5rem" }}>This cannot be undone.</p>
             <div style={{ display: "flex", gap: "0.75rem", justifyContent: "flex-end" }}>
               <button onClick={() => setConfirmResetAll(false)} style={{
                 padding: "9px 20px", borderRadius: "8px", border: "1px solid #e2e8f0",
                 background: "white", cursor: "pointer", fontWeight: 600, color: "#374151", fontSize: "0.9rem",
-              }}>
-                Cancel
-              </button>
+              }}>Cancel</button>
               <button onClick={resetAll} style={{
                 padding: "9px 20px", borderRadius: "8px", border: "none",
-                background: "#ef4444", color: "white", cursor: "pointer",
-                fontWeight: 700, fontSize: "0.9rem",
-              }}>
-                Yes, Refresh and Reset All
-              </button>
+                background: "#ef4444", color: "white", cursor: "pointer", fontWeight: 700, fontSize: "0.9rem",
+              }}>Yes, Refresh and Reset All</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ── Confirm Reset ONE Modal ── */}
+      {/* Confirm Reset ONE Modal */}
       {confirmReset && (
         <div style={{
           position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)",
@@ -234,9 +223,7 @@ export default function GenerateLinksPage() {
             maxWidth: "400px", width: "90%", boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
           }}>
             <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>⚠️</div>
-            <h3 style={{ fontWeight: 700, color: "#0f172a", marginBottom: "0.5rem" }}>
-              Reset Evaluation?
-            </h3>
+            <h3 style={{ fontWeight: 700, color: "#0f172a", marginBottom: "0.5rem" }}>Reset Evaluation?</h3>
             <p style={{ color: "#64748b", fontSize: "0.9rem", marginBottom: "1.5rem", lineHeight: 1.6 }}>
               This will <strong>delete all previous scores and comments</strong> submitted by{" "}
               <strong>{confirmReset.name}</strong> and generate a fresh link. This cannot be undone.
@@ -245,9 +232,7 @@ export default function GenerateLinksPage() {
               <button onClick={() => setConfirmReset(null)} style={{
                 padding: "8px 18px", borderRadius: "8px", border: "1px solid #e2e8f0",
                 background: "white", cursor: "pointer", fontWeight: 600, color: "#374151",
-              }}>
-                Cancel
-              </button>
+              }}>Cancel</button>
               <button
                 onClick={() => resetOne(confirmReset.studentId)}
                 disabled={resettingIds.has(confirmReset.studentId)}
@@ -291,10 +276,27 @@ export default function GenerateLinksPage() {
       {studentLinks.length > 0 && (
         <div className={styles.card}>
           <div className={styles.tableHeader}>
-            <p className={styles.cardTitle}>
-              STUDENT LINKS{" "}
-              <span className={styles.count}>{studentLinks.length} students</span>
-            </p>
+            <div>
+              <p className={styles.cardTitle}>
+                STUDENT LINKS{" "}
+                <span className={styles.count}>{studentLinks.length} students</span>
+              </p>
+              {/* Submission summary */}
+              <div style={{ display: "flex", gap: "8px", marginTop: "6px" }}>
+                <span style={{
+                  background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac",
+                  padding: "2px 10px", borderRadius: "99px", fontSize: "11px", fontWeight: 700,
+                }}>
+                  ✓ {submittedCount} submitted
+                </span>
+                <span style={{
+                  background: "#fef9c3", color: "#854d0e", border: "1px solid #fde68a",
+                  padding: "2px 10px", borderRadius: "99px", fontSize: "11px", fontWeight: 700,
+                }}>
+                  ⏳ {pendingCount} pending
+                </span>
+              </div>
+            </div>
             <div className={styles.actions}>
               <button
                 className={allRefreshed ? styles.refreshOneBtnDone : styles.refreshBtn}
@@ -326,14 +328,29 @@ export default function GenerateLinksPage() {
               {studentLinks.map(({ student, link }) => {
                 const justRefreshed = refreshedIds.has(student.id);
                 const isResetting = resettingIds.has(student.id);
+                const hasSubmitted = submittedIds.has(student.id);
                 return (
-                  <tr key={student.id} className={justRefreshed ? styles.rowFlash : ""}>
+                  <tr key={student.id} className={justRefreshed ? styles.rowFlash : ""}
+                    style={{ background: hasSubmitted ? "#f0fdf4" : undefined }}>
                     <td>
-                      <span className={styles.avatar}>
-                        {student.name.charAt(0).toUpperCase()}
-                      </span>
-                      {student.name.toUpperCase()}
-                      {justRefreshed && <span className={styles.newBadge}>NEW</span>}
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                        <span className={styles.avatar}
+                          style={{ background: hasSubmitted ? "#16a34a" : undefined }}>
+                          {student.name.charAt(0).toUpperCase()}
+                        </span>
+                        <span>{student.name.toUpperCase()}</span>
+                        {hasSubmitted && !justRefreshed && (
+                          <span style={{
+                            background: "#f0fdf4", color: "#16a34a",
+                            border: "1px solid #86efac",
+                            padding: "2px 8px", borderRadius: "99px",
+                            fontSize: "11px", fontWeight: 700,
+                          }}>✓ Done</span>
+                        )}
+                        {justRefreshed && (
+                          <span className={styles.newBadge}>RESET</span>
+                        )}
+                      </div>
                     </td>
                     <td>{student.email}</td>
                     <td>
